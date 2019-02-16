@@ -11,5 +11,12 @@
 
     <artifactId>client</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.oracle.javafx</groupId>
+            <artifactId>javafx</artifactId>
+            <version>8.0</version>
+        </dependency>
+    </dependencies>
 
 </project>
