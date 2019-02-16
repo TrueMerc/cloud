@@ -1,4 +1,9 @@
 package ru.ryabtsev.cloud.client;
 
-public class ClientApplication {
+import javafx.application.Application;
+
+/**
+ * Implements cloud client application.
+ */
+public class ClientApplication extends Application {
 }
