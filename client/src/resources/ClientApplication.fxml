@@ -12,7 +12,7 @@
     <HBox VBox.vgrow="ALWAYS">
         <!--Client side controls -->
         <VBox HBox.hgrow="ALWAYS">
-            <TableView fx:id="clientFilesListView" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS"/>
+            <TableView fx:id="clientFilesView" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS"/>
             <HBox>
                 <Button fx:id="clientCopyButton"  HBox.hgrow="ALWAYS"/>
                 <Button fx:id="clientCutButton" HBox.hgrow="ALWAYS"/>
@@ -22,7 +22,7 @@
 
         <!--Server side controls -->
         <VBox HBox.hgrow="ALWAYS">
-            <TableView fx:id="serverFilesListView" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS"/>
+            <TableView fx:id="serverFilesView" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS"/>
             <HBox>
                 <Button fx:id="serverCopyButton" HBox.hgrow="NEVER"/>
                 <Button fx:id="serverCutButton" HBox.hgrow="NEVER"/>

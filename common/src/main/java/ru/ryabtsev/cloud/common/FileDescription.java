@@ -30,6 +30,7 @@ public class FileDescription {
         else {
             defineNameAndExtension(file.getName());
         }
+
         this.size = file.isFile() ? String.valueOf( file.length() ) : "<DIR>";
         this.date = new Date( file.lastModified() ).toString();
         this.attributes = "";

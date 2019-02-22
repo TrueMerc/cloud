@@ -7,14 +7,9 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import ru.ryabtsev.cloud.common.FileDescription;
 
-
 import java.io.File;
-import java.io.PrintWriter;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.List;
 import java.util.ResourceBundle;
-
 
 /**
  * Implements client application controller.
@@ -25,13 +20,11 @@ public class ClientApplicationController implements Initializable {
     private static final String CUT_BUTTON_TEXT = "Cut";
     private static final String DELETE_BUTTON_TEXT = "Delete";
 
-    private static final String NAME_COLUMN_TEXT = "Name";
+    @FXML
+    TableView<FileDescription> clientFilesView = new TableView<>();
 
     @FXML
-    TableView<FileDescription> clientFilesListView = new TableView<>();
-
-    @FXML
-    TableView<String> serverFilesListView = new TableView<>();
+    TableView<FileDescription> serverFilesView = new TableView<>();
 
     @FXML
     Button clientCopyButton = new Button();
@@ -43,20 +36,20 @@ public class ClientApplicationController implements Initializable {
     Button clientDeleteButton = new Button();
 
     @FXML
-    Button serverCopyButton = new Button("&Copy");
+    Button serverCopyButton = new Button();
 
     @FXML
-    Button serverCutButton = new Button( "Cu&t");
+    Button serverCutButton = new Button();
 
     @FXML
-    Button serverDeleteButton = new Button( "&Delete");
+    Button serverDeleteButton = new Button();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initializeClientList();
         initializeServerList();
         initializeButtons();
-//        clientFilesListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+//        clientFilesView.setOnMouseClicked(new EventHandler<MouseEvent>() {
 //            @Override
 //            public void handle(MouseEvent mouseEvent) {
 //                if(mouseEvent.getClickCount() >= 2) {
@@ -70,12 +63,6 @@ public class ClientApplicationController implements Initializable {
         String userHomePath = System.getProperty("user.home");
         System.out.println( "User home path: " + userHomePath );
         File homeFile = new File(userHomePath);
-        List<String> filesList = Arrays.asList(homeFile.list());
-        if( filesList != null && !filesList.isEmpty() ) {
-            for(String file : filesList) {
-                System.out.println( file );
-            }
-        }
 
         File[] files = homeFile.listFiles();
         FileDescription[] filesDescriptions = new FileDescription[files.length];
@@ -84,9 +71,14 @@ public class ClientApplicationController implements Initializable {
             filesDescriptions[i] = new FileDescription(files[i]);
         }
 
+        addColumnsToFilesTableView( clientFilesView );
+
+        clientFilesView.getItems().addAll( filesDescriptions );
+    }
+
+    private static void addColumnsToFilesTableView(TableView<FileDescription> tableView) {
         TableColumn<FileDescription, String> tcName = new TableColumn<>("Name");
         tcName.setCellValueFactory(new PropertyValueFactory<>("name"));
-
         TableColumn<FileDescription, String> tcExtension = new TableColumn<>("Extension");
         tcExtension.setCellValueFactory(new PropertyValueFactory<>("extension"));
 
@@ -99,14 +91,11 @@ public class ClientApplicationController implements Initializable {
         TableColumn<FileDescription, String> tcAttributes = new TableColumn<>("Attributes");
         tcAttributes.setCellValueFactory(new PropertyValueFactory<>("attributes"));
 
-        clientFilesListView.getColumns().addAll( tcName, tcExtension, tcSize, tcDate, tcAttributes );
-
-        clientFilesListView.getItems().addAll( filesDescriptions );
+        tableView.getColumns().addAll( tcName, tcExtension, tcSize, tcDate, tcAttributes );
     }
 
     private void initializeServerList() {
-
-
+        addColumnsToFilesTableView( serverFilesView );
     }
 
     private void initializeButtons() {
@@ -118,6 +107,4 @@ public class ClientApplicationController implements Initializable {
         serverCutButton.setText(CUT_BUTTON_TEXT);
         serverDeleteButton.setText(DELETE_BUTTON_TEXT);
     }
-
-
 }
