@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<VBox   xmlns:fx="http://javafx.com/javafx"
+        fx:controller="ru.ryabtsev.cloud.client.ClientApplicationController"
+        alignment="CENTER"
+        prefHeight="480" prefWidth="640">
+
+    <HBox VBox.vgrow="ALWAYS">
+        <!--Client side controls -->
+        <VBox HBox.hgrow="ALWAYS">
+            <TableView fx:id="clientFilesListView" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS"/>
+            <HBox>
+                <Button fx:id="clientCopyButton"  HBox.hgrow="ALWAYS"/>
+                <Button fx:id="clientCutButton" HBox.hgrow="ALWAYS"/>
+                <Button fx:id="clientDeleteButton" HBox.hgrow="SOMETIMES"/>
+            </HBox>
+        </VBox>
+
+        <!--Server side controls -->
+        <VBox HBox.hgrow="ALWAYS">
+            <TableView fx:id="serverFilesListView" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS"/>
+            <HBox>
+                <Button fx:id="serverCopyButton" HBox.hgrow="NEVER"/>
+                <Button fx:id="serverCutButton" HBox.hgrow="NEVER"/>
+                <Button fx:id="serverDeleteButton" HBox.hgrow="NEVER"/>
+            </HBox>
+        </VBox>
+    </HBox>
+</VBox>

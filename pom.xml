@@ -8,10 +8,11 @@
     <artifactId>cloud</artifactId>
     <packaging>pom</packaging>
     <version>1.0</version>
+
     <modules>
         <module>server</module>
         <module>client</module>
-        <module>comon</module>
+        <module>common</module>
     </modules>
 
     <name>simple-cloud</name>
