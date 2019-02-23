@@ -11,5 +11,13 @@
 
     <artifactId>server</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>ru.ryabtsev</groupId>
+            <artifactId>common</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 
 </project>

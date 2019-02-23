@@ -10,9 +10,9 @@
     <version>1.0</version>
 
     <modules>
-        <module>server</module>
-        <module>client</module>
         <module>common</module>
+        <module>client</module>
+        <module>server</module>
     </modules>
 
     <name>simple-cloud</name>

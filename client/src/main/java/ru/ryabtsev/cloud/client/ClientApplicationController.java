@@ -5,10 +5,19 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import ru.ryabtsev.cloud.client.service.NettyNetworkService;
+import ru.ryabtsev.cloud.client.service.NetworkService;
 import ru.ryabtsev.cloud.common.FileDescription;
+import ru.ryabtsev.cloud.common.PortInformation;
+import ru.ryabtsev.cloud.common.message.FileMessage;
+import ru.ryabtsev.cloud.common.message.Message;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ResourceBundle;
 
 /**
@@ -19,6 +28,9 @@ public class ClientApplicationController implements Initializable {
     private static final String COPY_BUTTON_TEXT = "Copy";
     private static final String CUT_BUTTON_TEXT = "Cut";
     private static final String DELETE_BUTTON_TEXT = "Delete";
+
+    private static final String DEFAULT_SERVER_HOST = "localhost";
+    private static final int DEFAULT_SERVER_PORT = PortInformation.DEFAULT_PORT;
 
     @FXML
     TableView<FileDescription> clientFilesView = new TableView<>();
@@ -44,11 +56,16 @@ public class ClientApplicationController implements Initializable {
     @FXML
     Button serverDeleteButton = new Button();
 
+    private NetworkService networkService;
+
+    private String currentFolderName;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initializeClientList();
         initializeServerList();
         initializeButtons();
+        initializeNetwork();
 //        clientFilesView.setOnMouseClicked(new EventHandler<MouseEvent>() {
 //            @Override
 //            public void handle(MouseEvent mouseEvent) {
@@ -60,20 +77,11 @@ public class ClientApplicationController implements Initializable {
     }
 
     private void initializeClientList() {
-        String userHomePath = System.getProperty("user.home");
-        System.out.println( "User home path: " + userHomePath );
-        File homeFile = new File(userHomePath);
-
-        File[] files = homeFile.listFiles();
-        FileDescription[] filesDescriptions = new FileDescription[files.length];
-
-        for(int i = 0; i < filesDescriptions.length; ++i) {
-            filesDescriptions[i] = new FileDescription(files[i]);
-        }
+        currentFolderName = System.getProperty("user.home");
+        System.out.println( "User home path: " + currentFolderName );
 
         addColumnsToFilesTableView( clientFilesView );
-
-        clientFilesView.getItems().addAll( filesDescriptions );
+        refreshClientFilesList();
     }
 
     private static void addColumnsToFilesTableView(TableView<FileDescription> tableView) {
@@ -94,6 +102,19 @@ public class ClientApplicationController implements Initializable {
         tableView.getColumns().addAll( tcName, tcExtension, tcSize, tcDate, tcAttributes );
     }
 
+    private void refreshClientFilesList() {
+        File currentFolder = new File(currentFolderName);
+
+        File[] files = currentFolder.listFiles();
+        FileDescription[] filesDescriptions = new FileDescription[files.length];
+
+        for(int i = 0; i < filesDescriptions.length; ++i) {
+            filesDescriptions[i] = new FileDescription(files[i]);
+        }
+
+        clientFilesView.getItems().addAll( filesDescriptions );
+    }
+
     private void initializeServerList() {
         addColumnsToFilesTableView( serverFilesView );
     }
@@ -106,5 +127,35 @@ public class ClientApplicationController implements Initializable {
         serverCopyButton.setText(COPY_BUTTON_TEXT);
         serverCutButton.setText(CUT_BUTTON_TEXT);
         serverDeleteButton.setText(DELETE_BUTTON_TEXT);
+    }
+
+    private void initializeNetwork() {
+        networkService = new NettyNetworkService();
+        networkService.start(DEFAULT_SERVER_HOST, DEFAULT_SERVER_PORT);
+
+        Thread thread = new Thread(()->{
+            try {
+                while (true) {
+                    Message message = networkService.receiveMessage();
+                    Class<?> messageType = message.type();
+                    if (messageType.equals(FileMessage.class)) {
+                        FileMessage fileMessage = (FileMessage) message;
+                        Files.write(
+                                Paths.get(currentFolderName + '/' + fileMessage.getFileName()),
+                                fileMessage.getData(),
+                                StandardOpenOption.CREATE
+                        );
+                        refreshClientFilesList();
+                    }
+                }
+            } catch (ClassNotFoundException | IOException e) {
+                e.printStackTrace();
+            } finally {
+                networkService.stop();
+            }
+        });
+        thread.setDaemon(true);
+        thread.start();
+        refreshClientFilesList();
     }
 }
