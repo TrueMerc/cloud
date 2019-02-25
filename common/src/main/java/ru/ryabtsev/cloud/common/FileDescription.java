@@ -4,16 +4,16 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
+import java.util.LinkedList;
 
 /**
  * Implements simple file description using both client and server side.
  */
 @Getter
 @Setter
-public class FileDescription {
+public class FileDescription implements Serializable {
     private String name;
     private String extension;
     private String size;
@@ -21,17 +21,18 @@ public class FileDescription {
     private String attributes;
 
     boolean isDirectory;
-    List<FileDescription> childDescriptionList;
+    LinkedList<FileDescription> childDescriptionList;
 
     /**
      * Constructs simple file description.
-     * @param file
+     * @param file file information.
      */
     public FileDescription(final File file) {
         this(file, true);
     }
 
     private FileDescription(final File file, boolean expandDirectories) {
+        childDescriptionList = new LinkedList<>();
         if( file.isDirectory() ) {
             isDirectory = true;
             name = file.getName();
@@ -39,7 +40,6 @@ public class FileDescription {
 
             if( expandDirectories ) {
                 File[] files = file.listFiles();
-                childDescriptionList = new ArrayList<>();
                 if(files != null) {
                     for (File childFile : files) {
                         childDescriptionList.add(new FileDescription(childFile, false));
@@ -67,5 +67,4 @@ public class FileDescription {
             this.name = fileName;
         }
     }
-
 }

@@ -8,7 +8,7 @@ import ru.ryabtsev.cloud.common.message.Message;
  * Implements 'file request' message from client to server.
  */
 @Getter
-public class FileRequest implements Message {
+public class FileRequest extends Message {
     private String fileName;
 
     /**
@@ -17,10 +17,5 @@ public class FileRequest implements Message {
      */
     public FileRequest(@NotNull final String fileName) {
         this.fileName = fileName;
-    }
-
-    @Override
-    public Class<? extends Message> type() {
-        return this.getClass();
     }
 }

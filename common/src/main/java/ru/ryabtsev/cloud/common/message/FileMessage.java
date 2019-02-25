@@ -10,7 +10,7 @@ import java.nio.file.Path;
  * Implements message which contains file or its part.
  */
 @Getter
-public class FileMessage implements Message {
+public class FileMessage extends Message {
     private String fileName;
     private byte[] data;
 

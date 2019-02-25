@@ -1,21 +1,22 @@
 package ru.ryabtsev.cloud.common.message.server;
 
+import lombok.Getter;
 import ru.ryabtsev.cloud.common.FileDescription;
 import ru.ryabtsev.cloud.common.message.Message;
 
-import java.nio.file.Path;
-import java.util.List;
+/**
+ * Implements server response about file with given description.
+ */
+@Getter
+public class FileStructureResponse extends Message {
 
-public class FolderStructureResponse implements Message {
+    private FileDescription description;
 
-    private List<FileDescription> filesDescriptionList;
-
-    @Override
-    public Class<? extends Message> type() {
-        return this.getClass();
-    }
-
-    FolderStructureResponse(final Path folderPath) {
-
+    /**
+     * Constructs server response about file structure with given description.
+     * @param description file structure description.
+     */
+    public FileStructureResponse(final FileDescription description) {
+        this.description = description;
     }
 }

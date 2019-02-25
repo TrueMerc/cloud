@@ -20,11 +20,13 @@
     </TextField>
 
     <PasswordField fx:id="password" maxWidth="200" promptText="Password" />
-    <Button onAction="#authenticate" prefWidth="200" text="Authenticate">
+
+    <Button onAction="#authenticate" prefWidth="200" text="Authenticate" defaultButton="true">
         <opaqueInsets>
             <Insets />
         </opaqueInsets>
         <VBox.margin>
             <Insets top="10.0" />
-        </VBox.margin></Button>
+        </VBox.margin>
+    </Button>
 </VBox>

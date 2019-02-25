@@ -12,9 +12,9 @@ import java.net.Socket;
  * Implements network service using Netty networking package.
  */
 public class NettyNetworkService implements NetworkService {
-    private Socket socket;
-    private ObjectEncoderOutputStream out;
-    private ObjectDecoderInputStream in;
+    private  static Socket socket;
+    private  static ObjectEncoderOutputStream out;
+    private static ObjectDecoderInputStream in;
 
     @Override
     public void start(final String host, int port) {

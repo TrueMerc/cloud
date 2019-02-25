@@ -38,7 +38,6 @@ public class Server {
                         }
                     })
                     .option(ChannelOption.SO_BACKLOG, 128)
-                    .option(ChannelOption.TCP_NODELAY, true)
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
             ChannelFuture future = b.bind(PortInformation.DEFAULT_PORT).sync();
             future.channel().closeFuture().sync();
