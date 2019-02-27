@@ -16,7 +16,8 @@
             <HBox>
                 <Button fx:id="clientCopyButton"  HBox.hgrow="ALWAYS"/>
                 <Button fx:id="clientCutButton" HBox.hgrow="ALWAYS"/>
-                <Button fx:id="clientDeleteButton" HBox.hgrow="SOMETIMES"/>
+                <Button fx:id="clientDeleteButton" HBox.hgrow="ALWAYS"/>
+                <Button fx:id="clientRefreshButton" onAction="#refreshClientFilesList" HBox.hgrow="ALWAYS"/>
             </HBox>
         </VBox>
 
@@ -24,9 +25,10 @@
         <VBox HBox.hgrow="ALWAYS">
             <TableView fx:id="serverFilesView" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS"/>
             <HBox>
-                <Button fx:id="serverCopyButton" HBox.hgrow="NEVER"/>
-                <Button fx:id="serverCutButton" HBox.hgrow="NEVER"/>
-                <Button fx:id="serverDeleteButton" HBox.hgrow="NEVER"/>
+                <Button fx:id="serverCopyButton" onAction="#download" HBox.hgrow="ALWAYS"/>
+                <Button fx:id="serverCutButton" HBox.hgrow="ALWAYS"/>
+                <Button fx:id="serverDeleteButton" HBox.hgrow="ALWAYS"/>
+                <Button fx:id="serverRefreshButton" onAction="#refreshServerFilesList" HBox.hgrow="ALWAYS"/>
             </HBox>
         </VBox>
     </HBox>
