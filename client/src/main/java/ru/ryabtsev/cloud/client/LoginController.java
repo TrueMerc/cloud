@@ -3,7 +3,6 @@ package ru.ryabtsev.cloud.client;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.PasswordField;
@@ -14,8 +13,7 @@ import ru.ryabtsev.cloud.client.service.AuthencticationService;
 import ru.ryabtsev.cloud.client.service.DummyAuthenticationService;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
+
 
 /**
  * Implements login window controller.
@@ -29,10 +27,6 @@ public class LoginController {
 
     @FXML
     VBox parentWindow;
-
-    public int id;
-
-    public ClientApplicationController clientApplicationController;
 
     private AuthencticationService authencticationService = new DummyAuthenticationService();
 

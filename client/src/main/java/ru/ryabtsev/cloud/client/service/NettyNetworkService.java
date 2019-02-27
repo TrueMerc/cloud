@@ -3,6 +3,7 @@ package ru.ryabtsev.cloud.client.service;
 
 import io.netty.handler.codec.serialization.ObjectDecoderInputStream;
 import io.netty.handler.codec.serialization.ObjectEncoderOutputStream;
+import ru.ryabtsev.cloud.common.NetworkSettings;
 import ru.ryabtsev.cloud.common.message.Message;
 
 import java.io.IOException;
@@ -21,7 +22,10 @@ public class NettyNetworkService implements NetworkService {
         try {
             socket = new Socket(host, port);
             out = new ObjectEncoderOutputStream(socket.getOutputStream());
-            in = new ObjectDecoderInputStream(socket.getInputStream());
+            in = new ObjectDecoderInputStream(
+                    socket.getInputStream(),
+                    NetworkSettings.MAXIMAL_MESSAGE_SIZE_IN_BYTES + 1000
+            );
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -2,6 +2,7 @@ package ru.ryabtsev.cloud.client;
 
 
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -10,9 +11,10 @@ import org.jetbrains.annotations.NotNull;
 import ru.ryabtsev.cloud.client.service.NettyNetworkService;
 import ru.ryabtsev.cloud.client.service.NetworkService;
 import ru.ryabtsev.cloud.common.FileDescription;
-import ru.ryabtsev.cloud.common.PortInformation;
+import ru.ryabtsev.cloud.common.NetworkSettings;
 import ru.ryabtsev.cloud.common.message.FileMessage;
 import ru.ryabtsev.cloud.common.message.Message;
+import ru.ryabtsev.cloud.common.message.client.FileRequest;
 import ru.ryabtsev.cloud.common.message.client.FileStructureRequest;
 import ru.ryabtsev.cloud.common.message.client.HandshakeRequest;
 import ru.ryabtsev.cloud.common.message.server.FileStructureResponse;
@@ -32,12 +34,17 @@ import java.util.logging.Logger;
  */
 public class ClientApplicationController implements Initializable {
 
+    private static final String DEFAULT_FOLDER_NAME = "./client_storage";
+
+    private static final String DEFAULT_USER_NAME = "admin";
+
     private static final String COPY_BUTTON_TEXT = "Copy";
     private static final String CUT_BUTTON_TEXT = "Cut";
     private static final String DELETE_BUTTON_TEXT = "Delete";
+    private static final String REFRESH_BUTTON_TEXT = "Refresh";
 
     private static final String DEFAULT_SERVER_HOST = "localhost";
-    private static final int DEFAULT_SERVER_PORT = PortInformation.DEFAULT_PORT;
+    private static final int DEFAULT_SERVER_PORT = NetworkSettings.DEFAULT_PORT;
 
     private static final Logger LOGGER = Logger.getLogger(ClientApplication.class.getSimpleName());
 
@@ -57,6 +64,9 @@ public class ClientApplicationController implements Initializable {
     Button clientDeleteButton = new Button();
 
     @FXML
+    Button clientRefreshButton = new Button();
+
+    @FXML
     Button serverCopyButton = new Button();
 
     @FXML
@@ -64,6 +74,10 @@ public class ClientApplicationController implements Initializable {
 
     @FXML
     Button serverDeleteButton = new Button();
+
+    @FXML
+    Button serverRefreshButton = new Button();
+
 
     private static NetworkService networkService = new NettyNetworkService();;
 
@@ -78,8 +92,8 @@ public class ClientApplicationController implements Initializable {
     }
 
     private void initializeClientList() {
-        currentFolderName = System.getProperty("user.home");
-        System.out.println( "User home path: " + currentFolderName );
+        currentFolderName = DEFAULT_FOLDER_NAME;//System.getProperty("user.home");
+
 
         addColumnsToFilesTableView( clientFilesView );
         refreshClientFilesList();
@@ -103,6 +117,7 @@ public class ClientApplicationController implements Initializable {
         tableView.getColumns().addAll( tcName, tcExtension, tcSize, tcDate, tcAttributes );
     }
 
+    @FXML
     private void refreshClientFilesList() {
         File currentFolder = new File(currentFolderName);
 
@@ -119,10 +134,12 @@ public class ClientApplicationController implements Initializable {
         clientCopyButton.setText(COPY_BUTTON_TEXT);
         clientCutButton.setText(CUT_BUTTON_TEXT);
         clientDeleteButton.setText(DELETE_BUTTON_TEXT);
+        clientRefreshButton.setText(REFRESH_BUTTON_TEXT);
 
         serverCopyButton.setText(COPY_BUTTON_TEXT);
         serverCutButton.setText(CUT_BUTTON_TEXT);
         serverDeleteButton.setText(DELETE_BUTTON_TEXT);
+        serverRefreshButton.setText(REFRESH_BUTTON_TEXT);
     }
 
     private void initializeNetwork() {
@@ -169,28 +186,59 @@ public class ClientApplicationController implements Initializable {
         LOGGER.info(message.getClass().getSimpleName() + " received");
         System.out.println(message.getClass().getSimpleName() + " received");
         if(message.isSuccessful()) {
-            Message fileStructureRequest = new FileStructureRequest();
-            networkService.sendMessage(fileStructureRequest);
-            LOGGER.info(FileStructureRequest.class.getSimpleName() + " sent");
+            refreshServerFilesList();
         }
         else {
             LOGGER.warning("Handshake failed!!!");
         }
     }
 
+    @FXML
+    private void refreshServerFilesList() {
+        Message fileStructureRequest = new FileStructureRequest(DEFAULT_USER_NAME);
+        networkService.sendMessage(fileStructureRequest);
+        LOGGER.info(FileStructureRequest.class.getSimpleName() + " sent");
+    }
+
     private void processFileMessage(final FileMessage message) {
         LOGGER.info(message.getClass().getSimpleName() + " received");
         try {
+            StandardOpenOption openOption = getOpenOption(message);
             Files.write(
-                    Paths.get(currentFolderName + '/' + message.getFileName()),
+                    Paths.get( formNewFileName(message.getFileName()) ),
                     message.getData(),
-                    StandardOpenOption.CREATE
+                    openOption
             );
+            if( message.hasNext() ) {
+                networkService.sendMessage(
+                        new FileRequest(DEFAULT_USER_NAME, message.getFileName(), message.getPartNumber() + 1)
+                );
+            }
+            else {
+                refreshClientFilesList();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        refreshClientFilesList();
     }
+
+    private String formNewFileName(final String fileName) {
+        return currentFolderName + '/' + fileName;
+    }
+
+    private StandardOpenOption getOpenOption(final FileMessage message) {
+        StandardOpenOption result = StandardOpenOption.CREATE;
+        if(Files.exists(Paths.get(formNewFileName( message.getFileName() )))) {
+            if(message.getPartNumber() == 0) {
+                result = StandardOpenOption.WRITE;
+            }
+            else {
+                result = StandardOpenOption.APPEND;
+            }
+        }
+        return result;
+    }
+
 
     private void processFileStructureResponse(FileStructureResponse message) {
         LOGGER.info(message.getClass().getSimpleName() + " received");
@@ -206,6 +254,23 @@ public class ClientApplicationController implements Initializable {
             @NotNull final FileDescription description
     )
     {
-        view.getItems().addAll(description.getChildDescriptionList());
+        view.getItems().setAll(description.getChildDescriptionList());
+    }
+
+    public void download() {
+        final ObservableList<FileDescription> fileDescriptionsList = serverFilesView.getSelectionModel().getSelectedItems();
+        if( fileDescriptionsList == null || fileDescriptionsList.isEmpty() ) {
+            LOGGER.warning("Empty files list to download");
+        }
+        for(int i = 0; i < fileDescriptionsList.size(); ++i) {
+            FileDescription description = fileDescriptionsList.get(i);
+            LOGGER.info("Copying file " + description.getName());
+            sendFileRequest(description);
+        }
+    }
+
+    private void sendFileRequest(@NotNull final FileDescription fileDescription) {
+        String fileName = fileDescription.getName() + "." + fileDescription.getExtension();
+        networkService.sendMessage(new FileRequest(DEFAULT_USER_NAME, fileName, 0));
     }
 }

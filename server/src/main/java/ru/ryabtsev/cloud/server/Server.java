@@ -11,11 +11,11 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
-import ru.ryabtsev.cloud.common.PortInformation;
+import ru.ryabtsev.cloud.common.NetworkSettings;
 
 public class Server {
 
-    private static final int MAXIMAL_MESSAGE_SIZE = 50 * 1024 * 1024;
+    private static final int MAXIMAL_MESSAGE_SIZE = NetworkSettings.MAXIMAL_MESSAGE_SIZE_IN_BYTES;
 
     public Server() {
     }
@@ -39,7 +39,7 @@ public class Server {
                     })
                     .option(ChannelOption.SO_BACKLOG, 128)
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
-            ChannelFuture future = b.bind(PortInformation.DEFAULT_PORT).sync();
+            ChannelFuture future = b.bind(NetworkSettings.DEFAULT_PORT).sync();
             future.channel().closeFuture().sync();
         } finally {
             mainGroup.shutdownGracefully();
