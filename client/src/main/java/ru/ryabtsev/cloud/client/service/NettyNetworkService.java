@@ -4,7 +4,7 @@ package ru.ryabtsev.cloud.client.service;
 import io.netty.handler.codec.serialization.ObjectDecoderInputStream;
 import io.netty.handler.codec.serialization.ObjectEncoderOutputStream;
 import ru.ryabtsev.cloud.common.NetworkSettings;
-import ru.ryabtsev.cloud.common.message.Message;
+import ru.ryabtsev.cloud.common.message.AbstractMessage;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -55,7 +55,7 @@ public class NettyNetworkService implements NetworkService {
      * @param message message to send.
      * @return true if the message is successfully sent or false if it isn't.
      */
-    public boolean sendMessage(final Message message) {
+    public boolean sendMessage(final AbstractMessage message) {
         try {
             out.writeObject(message);
             return true;
@@ -66,9 +66,9 @@ public class NettyNetworkService implements NetworkService {
     }
 
     @Override
-    public Message receiveMessage() throws ClassNotFoundException, IOException {
+    public AbstractMessage receiveMessage() throws ClassNotFoundException, IOException {
         Object object = in.readObject();
-        return (Message) object;
+        return (AbstractMessage) object;
     }
 }
 

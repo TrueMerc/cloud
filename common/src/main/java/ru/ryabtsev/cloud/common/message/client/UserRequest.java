@@ -2,13 +2,13 @@ package ru.ryabtsev.cloud.common.message.client;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
-import ru.ryabtsev.cloud.common.message.Message;
+import ru.ryabtsev.cloud.common.message.AbstractMessage;
 
 /**
  * Base class for requests depend from something.
  */
 @Getter
-public class UserRequest extends Message {
+public class UserRequest extends AbstractMessage {
     private final String login;
 
     /**

@@ -1,13 +1,13 @@
-package ru.ryabtsev.cloud.common.message;
+package ru.ryabtsev.cloud.common.message.server;
 
 import lombok.Getter;
-import ru.ryabtsev.cloud.common.message.Message;
+import ru.ryabtsev.cloud.common.message.AbstractMessage;
 
 /**
  * Implements response from server to client.
  */
 @Getter
-public class HandshakeResponse extends Message {
+public class HandshakeResponse extends AbstractMessage {
     boolean isSuccessful;
 
     /**

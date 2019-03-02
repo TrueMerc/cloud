@@ -13,12 +13,12 @@ import ru.ryabtsev.cloud.client.service.NetworkService;
 import ru.ryabtsev.cloud.common.FileDescription;
 import ru.ryabtsev.cloud.common.NetworkSettings;
 import ru.ryabtsev.cloud.common.message.FileMessage;
-import ru.ryabtsev.cloud.common.message.Message;
-import ru.ryabtsev.cloud.common.message.client.file.FileRequest;
+import ru.ryabtsev.cloud.common.message.AbstractMessage;
+import ru.ryabtsev.cloud.common.message.client.file.DownloadRequest;
 import ru.ryabtsev.cloud.common.message.client.file.FileStructureRequest;
 import ru.ryabtsev.cloud.common.message.client.HandshakeRequest;
 import ru.ryabtsev.cloud.common.message.server.file.FileStructureResponse;
-import ru.ryabtsev.cloud.common.message.HandshakeResponse;
+import ru.ryabtsev.cloud.common.message.server.HandshakeResponse;
 
 import java.io.File;
 import java.io.IOException;
@@ -106,7 +106,7 @@ public class ClientApplicationController implements Initializable {
             LOGGER.info("Listener thread started.");
             try {
                 while (true) {
-                    Message message = networkService.receiveMessage();
+                    AbstractMessage message = networkService.receiveMessage();
                     if(message == null) {
                         LOGGER.warning("null message received.");
                         continue;
@@ -135,7 +135,7 @@ public class ClientApplicationController implements Initializable {
         thread.setDaemon(true);
         thread.start();
 
-        Message message = new HandshakeRequest();
+        AbstractMessage message = new HandshakeRequest();
         networkService.sendMessage(message);
     }
 
@@ -152,7 +152,7 @@ public class ClientApplicationController implements Initializable {
 
     @FXML
     private void refreshServerFilesList() {
-        Message fileStructureRequest = new FileStructureRequest(DEFAULT_USER_NAME);
+        AbstractMessage fileStructureRequest = new FileStructureRequest(DEFAULT_USER_NAME);
         networkService.sendMessage(fileStructureRequest);
         LOGGER.info(FileStructureRequest.class.getSimpleName() + " sent");
     }
@@ -168,7 +168,7 @@ public class ClientApplicationController implements Initializable {
             );
             if( message.hasNext() ) {
                 networkService.sendMessage(
-                        new FileRequest(DEFAULT_USER_NAME, message.getFileName(), message.getPartNumber() + 1)
+                        new DownloadRequest(DEFAULT_USER_NAME, message.getFileName(), message.getPartNumber() + 1)
                 );
             }
             else {
@@ -228,6 +228,6 @@ public class ClientApplicationController implements Initializable {
 
     private void sendFileRequest(@NotNull final FileDescription fileDescription) {
         String fileName = fileDescription.getName() + "." + fileDescription.getExtension();
-        networkService.sendMessage(new FileRequest(DEFAULT_USER_NAME, fileName, 0));
+        networkService.sendMessage(new DownloadRequest(DEFAULT_USER_NAME, fileName, 0));
     }
 }

@@ -1,4 +1,9 @@
 package ru.ryabtsev.cloud.common.message.server.file;
 
-public interface FileResponse {
+import ru.ryabtsev.cloud.common.message.Message;
+
+/**
+ * Provides interface for responses to client file requests.
+ */
+public interface FileResponse extends Message {
 }

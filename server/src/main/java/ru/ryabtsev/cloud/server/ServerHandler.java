@@ -6,12 +6,12 @@ import io.netty.util.ReferenceCountUtil;
 import ru.ryabtsev.cloud.common.FileDescription;
 import ru.ryabtsev.cloud.common.NetworkSettings;
 import ru.ryabtsev.cloud.common.message.FileMessage;
-import ru.ryabtsev.cloud.common.message.Message;
-import ru.ryabtsev.cloud.common.message.client.file.FileRequest;
+import ru.ryabtsev.cloud.common.message.AbstractMessage;
+import ru.ryabtsev.cloud.common.message.client.file.DownloadRequest;
 import ru.ryabtsev.cloud.common.message.client.file.FileStructureRequest;
 import ru.ryabtsev.cloud.common.message.client.HandshakeRequest;
 import ru.ryabtsev.cloud.common.message.server.file.FileStructureResponse;
-import ru.ryabtsev.cloud.common.message.HandshakeResponse;
+import ru.ryabtsev.cloud.common.message.server.HandshakeResponse;
 import ru.ryabtsev.cloud.server.service.DummyUserService;
 import ru.ryabtsev.cloud.server.service.UserService;
 
@@ -31,15 +31,15 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object object) throws Exception {
         try {
-            Message message = (Message) object;
+            AbstractMessage message = (AbstractMessage) object;
             if (message == null) {
                 LOGGER.warning("null message received.");
             }
             if (message.type().equals(HandshakeRequest.class)) {
                 processHandshakeRequest(ctx, (HandshakeRequest) message);
             }
-            else if (message.type().equals(FileRequest.class)) {
-                processFileRequest(ctx, (FileRequest) message);
+            else if (message.type().equals(DownloadRequest.class)) {
+                processFileRequest(ctx, (DownloadRequest) message);
             }
             else if (message.type().equals(FileStructureRequest.class)) {
                 processFileStructureRequest(ctx, (FileStructureRequest) message);
@@ -65,11 +65,11 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
         ctx.writeAndFlush(response);
     }
 
-    private void logRequest(Message request) {
+    private void logRequest(AbstractMessage request) {
         System.out.println(request.getClass().getSimpleName() + " received");
     }
 
-    private void processFileRequest(final ChannelHandlerContext ctx, final FileRequest request) throws IOException {
+    private void processFileRequest(final ChannelHandlerContext ctx, final DownloadRequest request) throws IOException {
         logRequest(request);
         final String fileName = userService.getFolder(request.getLogin()) + '/' + request.getFileName();
         if (Files.exists(Paths.get(fileName))) {

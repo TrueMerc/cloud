@@ -13,7 +13,7 @@ import java.nio.file.Path;
  * Implements message which contains file or its part.
  */
 @Getter
-public class FileMessage extends Message {
+public class FileMessage extends AbstractMessage {
     private String fileName;
     private byte[] data;
     int partNumber;
