@@ -3,6 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import ru.ryabtsev.cloud.client.gui.CommandText?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 
 <VBox xmlns:fx="http://javafx.com/javafx"
       fx:controller="ru.ryabtsev.cloud.client.ClientApplicationController"
@@ -10,89 +11,122 @@
       prefHeight="480" prefWidth="640">
     <MenuBar>
         <Menu text="_File" >
+            <graphic>
+                <FontAwesomeIconView glyphName="FILE" glyphStyle="-fx-fill: black" />
+            </graphic>
             <MenuItem text="E_xit" onAction="#exitApplication"/>
         </Menu>
         <Menu text="_Help">
+            <graphic>
+                <FontAwesomeIconView glyphName="QUESTION_CIRCLE" glyphStyle="-fx-fill: black" />
+            </graphic>
             <MenuItem text="_About"/>
         </Menu>
     </MenuBar>
-    <HBox VBox.vgrow="ALWAYS">
-        <!--Client side controls -->
-        <VBox HBox.hgrow="ALWAYS">
-            <TableView fx:id="clientFilesView" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS"/>
-            <HBox>
-                <Button fx:id="clientCopyButton" onAction="#upload" HBox.hgrow="ALWAYS">
-                    <text>
-                        <CommandText fx:constant="COPY"/>
-                    </text>
-                    <tooltip>
-                        <Tooltip text="Copy selected files from client to server"/>
-                    </tooltip>
-                </Button>
-                <Button fx:id="clientCutButton" HBox.hgrow="ALWAYS">
-                    <text>
-                        <CommandText fx:constant="CUT"/>
-                    </text>
-                    <tooltip>
-                        <Tooltip text="Copy selected files from client to server and remove them from client"/>
-                    </tooltip>
-                </Button>
-                <Button fx:id="clientDeleteButton" HBox.hgrow="ALWAYS">
-                    <text>
-                        <CommandText fx:constant="DELETE"/>
-                    </text>
-                    <tooltip>
-                        <Tooltip text="Delete selected files from client"/>
-                    </tooltip>
-                </Button>
-                <Button fx:id="clientRefreshButton" onAction="#refreshClientFilesList" HBox.hgrow="ALWAYS">
-                    <text>
-                        <CommandText fx:constant="REFRESH"/>
-                    </text>
-                    <tooltip>
-                        <Tooltip text = "Refresh client files list"/>
-                    </tooltip>
-                </Button>
-            </HBox>
-        </VBox>
+    <children>
+        <HBox VBox.vgrow="ALWAYS">
+            <!--Client side controls -->
+            <VBox HBox.hgrow="ALWAYS">
+                <TableView fx:id="clientFilesView" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS"/>
+                <HBox>
+                    <Button fx:id="clientCopyButton" onAction="#upload" HBox.hgrow="ALWAYS">
+                        <graphic>
+                            <FontAwesomeIconView glyphName="CLOUD_UPLOAD" glyphStyle="-fx-fill: black" />
+                        </graphic>
+                        <text>
+                            <CommandText fx:constant="COPY"/>
+                        </text>
+                        <tooltip>
+                            <Tooltip text="Copy selected files from client to server"/>
+                        </tooltip>
 
-        <!--Server side controls -->
-        <VBox HBox.hgrow="ALWAYS">
-            <TableView fx:id="serverFilesView" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS"/>
-            <HBox>
-                <Button fx:id="serverCopyButton" onAction="#download" HBox.hgrow="ALWAYS">
-                    <text>
-                        <CommandText fx:constant="COPY"/>
-                    </text>
-                    <tooltip>
-                        <Tooltip text="Copy selected files from server to client"/>
-                    </tooltip>
-                </Button>
-                <Button fx:id="serverCutButton" HBox.hgrow="ALWAYS">
-                    <text>
-                        <CommandText fx:constant="CUT"/>
-                    </text>
-                    <tooltip>
-                        <Tooltip text="Copy selected files from server to client and remove them from server"/>
-                    </tooltip>
-                </Button>
-                <Button fx:id="serverDeleteButton" HBox.hgrow="ALWAYS">
-                    <text>
-                        <CommandText fx:constant="DELETE"/>
-                    </text>
-                    <tooltip>
-                        <Tooltip text="Delete selected files from server"/>
-                    </tooltip>
-                </Button>
-                <Button fx:id="serverRefreshButton" onAction="#refreshServerFilesList" HBox.hgrow="ALWAYS">
-                    <text>
-                        <CommandText fx:constant="REFRESH"/>
-                    </text>
-                    <tooltip>
-                        <Tooltip text="Refresh server files list"/>
-                    </tooltip>
-                </Button>
-            </HBox>
-        </VBox>
-    </HBox>
+                    </Button>
+                    <Button fx:id="clientCutButton" HBox.hgrow="ALWAYS">
+                        <graphic>
+                            <FontAwesomeIconView glyphName="CUT" glyphStyle="-fx-fill: black" />
+                        </graphic>
+                        <text>
+                            <CommandText fx:constant="CUT"/>
+                        </text>
+                        <tooltip>
+                            <Tooltip text="Copy selected files from client to server and remove them from client"/>
+                        </tooltip>
+                    </Button>
+                    <Button fx:id="clientDeleteButton" HBox.hgrow="ALWAYS">
+                        <graphic>
+                            <FontAwesomeIconView glyphName="TRASH" glyphStyle="-fx-fill: black" />
+                        </graphic>
+                        <text>
+                            <CommandText fx:constant="DELETE"/>
+                        </text>
+                        <tooltip>
+                            <Tooltip text="Delete selected files from client"/>
+                        </tooltip>
+                    </Button>
+                    <Button fx:id="clientRefreshButton" onAction="#refreshClientFilesList" HBox.hgrow="ALWAYS">
+                        <graphic>
+                            <FontAwesomeIconView glyphName="REFRESH" glyphStyle="-fx-fill: black" />
+                        </graphic>
+                        <text>
+                            <CommandText fx:constant="REFRESH"/>
+                        </text>
+                        <tooltip>
+                            <Tooltip text = "Refresh client files list"/>
+                        </tooltip>
+                    </Button>
+                </HBox>
+            </VBox>
+
+            <!--Server side controls -->
+            <VBox HBox.hgrow="ALWAYS">
+                <TableView fx:id="serverFilesView" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS"/>
+                <HBox>
+                    <Button fx:id="serverCopyButton" onAction="#download" HBox.hgrow="ALWAYS">
+                        <graphic>
+                            <FontAwesomeIconView glyphName="CLOUD_DOWNLOAD" glyphStyle="-fx-fill: black"/>
+                        </graphic>
+                        <text>
+                            <CommandText fx:constant="COPY"/>
+                        </text>
+                        <tooltip>
+                            <Tooltip text="Copy selected files from server to client"/>
+                        </tooltip>
+                    </Button>
+                    <Button fx:id="serverCutButton" HBox.hgrow="ALWAYS">
+                        <graphic>
+                            <FontAwesomeIconView glyphName="CUT" glyphStyle="-fx-fill: black" />
+                        </graphic>
+                        <text>
+                            <CommandText fx:constant="CUT"/>
+                        </text>
+                        <tooltip>
+                            <Tooltip text="Copy selected files from server to client and remove them from server"/>
+                        </tooltip>
+                    </Button>
+                    <Button fx:id="serverDeleteButton" HBox.hgrow="ALWAYS">
+                        <graphic>
+                            <FontAwesomeIconView glyphName="TRASH" glyphStyle="-fx-fill: black" />
+                        </graphic>
+                        <text>
+                            <CommandText fx:constant="DELETE"/>
+                        </text>
+                        <tooltip>
+                            <Tooltip text="Delete selected files from server"/>
+                        </tooltip>
+                    </Button>
+                    <Button fx:id="serverRefreshButton" onAction="#refreshServerFilesList" HBox.hgrow="ALWAYS">
+                        <graphic>
+                            <FontAwesomeIconView glyphName="REFRESH" glyphStyle="-fx-fill: black" />
+                        </graphic>
+                        <text>
+                            <CommandText fx:constant="REFRESH"/>
+                        </text>
+                        <tooltip>
+                            <Tooltip text="Refresh server files list"/>
+                        </tooltip>
+                    </Button>
+                </HBox>
+            </VBox>
+        </HBox>
+    </children>
 </VBox>

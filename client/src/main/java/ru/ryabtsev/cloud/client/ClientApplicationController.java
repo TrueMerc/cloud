@@ -252,11 +252,6 @@ public class ClientApplicationController implements Initializable {
         copy(ApplicationSide.SERVER, ApplicationSide.CLIENT);
     }
 
-    private void sendDownloadRequest(@NotNull final FileDescription fileDescription) {
-        String fileName = fileDescription.getName() + "." + fileDescription.getExtension();
-        networkService.sendMessage(new DownloadRequest(DEFAULT_USER_NAME, fileName, 0));
-    }
-
     public void upload() {
         copy(ApplicationSide.CLIENT, ApplicationSide.SERVER);
     }
@@ -313,6 +308,12 @@ public class ClientApplicationController implements Initializable {
             e.printStackTrace();
         }
     }
+
+    private void sendDownloadRequest(@NotNull final FileDescription fileDescription) {
+        String fileName = fileDescription.getName() + "." + fileDescription.getExtension();
+        networkService.sendMessage(new DownloadRequest(DEFAULT_USER_NAME, fileName, 0));
+    }
+
 
     @FXML
     private void exitApplication() {
