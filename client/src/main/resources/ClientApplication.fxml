@@ -2,22 +2,33 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import java.lang.String?>
+<?import ru.ryabtsev.cloud.client.gui.CommandText?>
 
-
-<VBox   xmlns:fx="http://javafx.com/javafx"
-        fx:controller="ru.ryabtsev.cloud.client.ClientApplicationController"
-        alignment="CENTER"
-        prefHeight="480" prefWidth="640">
-
+<VBox xmlns:fx="http://javafx.com/javafx"
+      fx:controller="ru.ryabtsev.cloud.client.ClientApplicationController"
+      alignment="CENTER"
+      prefHeight="480" prefWidth="640">
+    <fx:define>
+        <String fx:id="COPY_BUTTON_TEXT" fx:value = "Copy" />
+    </fx:define>
     <HBox VBox.vgrow="ALWAYS">
         <!--Client side controls -->
         <VBox HBox.hgrow="ALWAYS">
             <TableView fx:id="clientFilesView" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS"/>
             <HBox>
-                <Button fx:id="clientCopyButton"  HBox.hgrow="ALWAYS"/>
-                <Button fx:id="clientCutButton" HBox.hgrow="ALWAYS"/>
-                <Button fx:id="clientDeleteButton" HBox.hgrow="ALWAYS"/>
-                <Button fx:id="clientRefreshButton" onAction="#refreshClientFilesList" HBox.hgrow="ALWAYS"/>
+                <Button fx:id="clientCopyButton"  HBox.hgrow="ALWAYS">
+                    <text> <CommandText fx:constant="COPY"/>  </text>
+                </Button>
+                <Button fx:id="clientCutButton" HBox.hgrow="ALWAYS">
+                    <text> <CommandText fx:constant="CUT"/> </text>
+                </Button>
+                <Button fx:id="clientDeleteButton" HBox.hgrow="ALWAYS">
+                    <text> <CommandText fx:constant="DELETE"/> </text>
+                </Button>
+                <Button fx:id="clientRefreshButton" onAction="#refreshClientFilesList" HBox.hgrow="ALWAYS">
+                    <text> <CommandText fx:constant="REFRESH"/> </text>
+                </Button>
             </HBox>
         </VBox>
 
@@ -25,10 +36,18 @@
         <VBox HBox.hgrow="ALWAYS">
             <TableView fx:id="serverFilesView" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS"/>
             <HBox>
-                <Button fx:id="serverCopyButton" onAction="#download" HBox.hgrow="ALWAYS"/>
-                <Button fx:id="serverCutButton" HBox.hgrow="ALWAYS"/>
-                <Button fx:id="serverDeleteButton" HBox.hgrow="ALWAYS"/>
-                <Button fx:id="serverRefreshButton" onAction="#refreshServerFilesList" HBox.hgrow="ALWAYS"/>
+                <Button fx:id="serverCopyButton" onAction="#download" HBox.hgrow="ALWAYS">
+                    <text> <CommandText fx:constant="COPY"/>  </text>
+                </Button>
+                <Button fx:id="serverCutButton" HBox.hgrow="ALWAYS">
+                    <text> <CommandText fx:constant="CUT"/> </text>
+                </Button>
+                <Button fx:id="serverDeleteButton" HBox.hgrow="ALWAYS">
+                    <text> <CommandText fx:constant="DELETE"/> </text>
+                </Button>
+                <Button fx:id="serverRefreshButton" onAction="#refreshServerFilesList" HBox.hgrow="ALWAYS">
+                    <text> <CommandText fx:constant="REFRESH"/> </text>
+                </Button>
             </HBox>
         </VBox>
     </HBox>

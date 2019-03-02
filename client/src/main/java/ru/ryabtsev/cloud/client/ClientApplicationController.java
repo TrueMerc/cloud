@@ -38,11 +38,6 @@ public class ClientApplicationController implements Initializable {
 
     private static final String DEFAULT_USER_NAME = "admin";
 
-    private static final String COPY_BUTTON_TEXT = "Copy";
-    private static final String CUT_BUTTON_TEXT = "Cut";
-    private static final String DELETE_BUTTON_TEXT = "Delete";
-    private static final String REFRESH_BUTTON_TEXT = "Refresh";
-
     private static final String DEFAULT_SERVER_HOST = "localhost";
     private static final int DEFAULT_SERVER_PORT = NetworkSettings.DEFAULT_PORT;
 
@@ -54,31 +49,6 @@ public class ClientApplicationController implements Initializable {
     @FXML
     TableView<FileDescription> serverFilesView = new TableView<>();
 
-    @FXML
-    Button clientCopyButton = new Button();
-
-    @FXML
-    Button clientCutButton = new Button();
-
-    @FXML
-    Button clientDeleteButton = new Button();
-
-    @FXML
-    Button clientRefreshButton = new Button();
-
-    @FXML
-    Button serverCopyButton = new Button();
-
-    @FXML
-    Button serverCutButton = new Button();
-
-    @FXML
-    Button serverDeleteButton = new Button();
-
-    @FXML
-    Button serverRefreshButton = new Button();
-
-
     private static NetworkService networkService = new NettyNetworkService();;
 
     private String currentFolderName;
@@ -87,7 +57,6 @@ public class ClientApplicationController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initializeClientList();
         initializeServerList();
-        initializeButtons();
         initializeNetwork();
     }
 
@@ -128,18 +97,6 @@ public class ClientApplicationController implements Initializable {
 
     private void initializeServerList() {
         addColumnsToFilesTableView( serverFilesView );
-    }
-
-    private void initializeButtons() {
-        clientCopyButton.setText(COPY_BUTTON_TEXT);
-        clientCutButton.setText(CUT_BUTTON_TEXT);
-        clientDeleteButton.setText(DELETE_BUTTON_TEXT);
-        clientRefreshButton.setText(REFRESH_BUTTON_TEXT);
-
-        serverCopyButton.setText(COPY_BUTTON_TEXT);
-        serverCutButton.setText(CUT_BUTTON_TEXT);
-        serverDeleteButton.setText(DELETE_BUTTON_TEXT);
-        serverRefreshButton.setText(REFRESH_BUTTON_TEXT);
     }
 
     private void initializeNetwork() {
