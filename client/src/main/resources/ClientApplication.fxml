@@ -8,7 +8,14 @@
       fx:controller="ru.ryabtsev.cloud.client.ClientApplicationController"
       alignment="CENTER"
       prefHeight="480" prefWidth="640">
-
+    <MenuBar>
+        <Menu text="_File" >
+            <MenuItem text="E_xit" onAction="#exitApplication"/>
+        </Menu>
+        <Menu text="_Help">
+            <MenuItem text="_About"/>
+        </Menu>
+    </MenuBar>
     <HBox VBox.vgrow="ALWAYS">
         <!--Client side controls -->
         <VBox HBox.hgrow="ALWAYS">

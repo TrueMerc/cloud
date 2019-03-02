@@ -313,4 +313,9 @@ public class ClientApplicationController implements Initializable {
             e.printStackTrace();
         }
     }
+
+    @FXML
+    private void exitApplication() {
+        Platform.exit();
+    }
 }
