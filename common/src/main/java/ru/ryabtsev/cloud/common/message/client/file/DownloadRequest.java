@@ -2,13 +2,13 @@ package ru.ryabtsev.cloud.common.message.client.file;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
-import ru.ryabtsev.cloud.common.message.client.UserRequest;
+import ru.ryabtsev.cloud.common.message.client.UserDependentRequest;
 
 /**
  * Implements 'download request' message from client to server.
  */
 @Getter
-public class DownloadRequest extends UserRequest implements FileRequest {
+public class DownloadRequest extends UserDependentRequest implements FileRequest {
     private String fileName;
     private int partNumber;
 

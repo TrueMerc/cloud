@@ -29,6 +29,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 /**
@@ -54,6 +55,10 @@ public class ClientApplicationController implements Initializable {
     private static NetworkService networkService = new NettyNetworkService();;
 
     private String currentFolderName;
+
+    private enum ApplicationSide {
+        CLIENT, SERVER
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -116,6 +121,7 @@ public class ClientApplicationController implements Initializable {
                         continue;
                     }
                     logMessage(message);
+
                     Class<?> messageType = message.type();
                     if (messageType.equals(HandshakeResponse.class)) {
                         processHandshakeResponse((HandshakeResponse)message);
@@ -243,15 +249,7 @@ public class ClientApplicationController implements Initializable {
     }
 
     public void download() {
-        final ObservableList<FileDescription> fileDescriptionsList = serverFilesView.getSelectionModel().getSelectedItems();
-        if( fileDescriptionsList == null || fileDescriptionsList.isEmpty() ) {
-            LOGGER.warning("Empty files list to download.");
-        }
-        for(int i = 0; i < fileDescriptionsList.size(); ++i) {
-            FileDescription description = fileDescriptionsList.get(i);
-            LOGGER.info("Copying file " + description.getName());
-            sendDownloadRequest(description);
-        }
+        copy(ApplicationSide.SERVER, ApplicationSide.CLIENT);
     }
 
     private void sendDownloadRequest(@NotNull final FileDescription fileDescription) {
@@ -260,29 +258,59 @@ public class ClientApplicationController implements Initializable {
     }
 
     public void upload() {
-        final ObservableList<FileDescription> fileDescriptionsList = clientFilesView.getSelectionModel().getSelectedItems();
-        if( fileDescriptionsList == null || fileDescriptionsList.isEmpty() ) {
-            LOGGER.warning("Empty files list to upload.");
+        copy(ApplicationSide.CLIENT, ApplicationSide.SERVER);
+    }
+
+    private void copy(ApplicationSide from, ApplicationSide to) {
+        final ObservableList<FileDescription> selectedFilesDescription = getSelectedFiles(from);
+        if( selectedFilesDescription == null || selectedFilesDescription.isEmpty() ) {
+            LOGGER.warning( "There aren't files to copy");
         }
-        for(int i = 0; i < fileDescriptionsList.size(); ++i) {
-            FileDescription description = fileDescriptionsList.get(i);
-            LOGGER.info("Copying file " + description.getName());
-            try {
-                sendUploadRequest(description);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+
+        Consumer<FileDescription> onCopySendMethod = getOnCopySendMethod(from);
+        for( FileDescription description : selectedFilesDescription ) {
+            onCopySendMethod.accept(description);
         }
     }
 
-    private void sendUploadRequest(@NotNull final FileDescription fileDescription) throws IOException {
+    private ObservableList<FileDescription> getSelectedFiles(final ApplicationSide side) throws RuntimeException {
+        return getView(side).getSelectionModel().getSelectedItems();
+    }
+
+    private TableView<FileDescription> getView(ApplicationSide side) throws RuntimeException {
+        switch(side) {
+            case CLIENT:
+                return clientFilesView;
+            case SERVER:
+                return serverFilesView;
+            default:
+                throw new RuntimeException("Unexpected client-server application side.");
+        }
+    }
+
+    private Consumer<FileDescription> getOnCopySendMethod(ApplicationSide from) throws RuntimeException {
+        switch(from) {
+            case CLIENT:
+                return this::sendUploadRequest;
+            case SERVER:
+                return this::sendDownloadRequest;
+            default:
+                throw new RuntimeException("Unexpected client-server application size.");
+        }
+    }
+
+    private void sendUploadRequest(@NotNull final FileDescription fileDescription) {
         String filename = fileDescription.getName() + "." + fileDescription.getExtension();
-        networkService.sendMessage(
-                new FileMessage(
-                        Paths.get(formNewFileName(filename)),
-                        0,
-                        NetworkSettings.MAXIMAL_MESSAGE_SIZE_IN_BYTES + 1000
-                )
-        );
+        try {
+            networkService.sendMessage(
+                    new FileMessage(
+                            Paths.get(formNewFileName(filename)),
+                            0,
+                            NetworkSettings.MAXIMAL_MESSAGE_SIZE_IN_BYTES + 1000
+                    )
+            );
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
