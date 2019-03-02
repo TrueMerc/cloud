@@ -7,7 +7,7 @@ import ru.ryabtsev.cloud.common.message.AbstractMessage;
  * Implements response from server to client.
  */
 @Getter
-public class HandshakeResponse extends AbstractMessage {
+public class HandshakeResponse extends AbstractMessage implements Response {
     boolean isSuccessful;
 
     /**

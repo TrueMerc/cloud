@@ -16,8 +16,14 @@ public interface UserService {
      */
     boolean authenticate(final @NotNull String login, final @NotNull String password);
 
+
     /**
-     * Returns folder for user with the given name.
+     * Returns root folder for user with the given name.
      */
-    @Nullable String getFolder(final String login);
+    @Nullable String getRootFolder(final String login);
+
+    /**
+     * Returns current folder for user with the given name.
+     */
+    @Nullable String getCurrentFolder(final String login);
 }

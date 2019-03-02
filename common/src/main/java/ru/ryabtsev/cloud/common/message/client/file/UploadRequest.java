@@ -5,18 +5,21 @@ import org.jetbrains.annotations.NotNull;
 import ru.ryabtsev.cloud.common.message.client.UserRequest;
 
 /**
- * Implements 'download request' message from client to server.
+ * Implements 'upload request' message from client to server.
  */
 @Getter
-public class DownloadRequest extends UserRequest implements FileRequest {
+public class UploadRequest extends UserRequest implements FileRequest {
+
     private String fileName;
     private int partNumber;
 
     /**
-     * Constructs download file request with given file name.
+     * Constructs upload request with given file name.
+     * @param login user login.
      * @param fileName name of the file, which is requested by client.
+     * @param partNumber number of the part of the file.
      */
-    public DownloadRequest(@NotNull final String login, @NotNull final String fileName, int partNumber) {
+    public UploadRequest(@NotNull final String login, @NotNull final String fileName, int partNumber) {
         super(login);
         this.fileName = fileName;
         this.partNumber = partNumber;

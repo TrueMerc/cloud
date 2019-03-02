@@ -16,7 +16,12 @@ public class DummyUserService implements UserService {
     }
 
     @Override
-    public @Nullable String getFolder(String login) {
+    public @Nullable String getRootFolder(String login) {
+        return DEFAULT_STORAGE_FOLDER;
+    }
+
+    @Override
+    public @Nullable String getCurrentFolder(String login) {
         return DEFAULT_STORAGE_FOLDER;
     }
 }

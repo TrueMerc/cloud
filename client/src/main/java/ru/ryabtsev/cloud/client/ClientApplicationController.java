@@ -14,11 +14,14 @@ import ru.ryabtsev.cloud.common.FileDescription;
 import ru.ryabtsev.cloud.common.NetworkSettings;
 import ru.ryabtsev.cloud.common.message.FileMessage;
 import ru.ryabtsev.cloud.common.message.AbstractMessage;
+import ru.ryabtsev.cloud.common.message.Message;
 import ru.ryabtsev.cloud.common.message.client.file.DownloadRequest;
 import ru.ryabtsev.cloud.common.message.client.file.FileStructureRequest;
 import ru.ryabtsev.cloud.common.message.client.HandshakeRequest;
+import ru.ryabtsev.cloud.common.message.client.file.UploadRequest;
 import ru.ryabtsev.cloud.common.message.server.file.FileStructureResponse;
 import ru.ryabtsev.cloud.common.message.server.HandshakeResponse;
+import ru.ryabtsev.cloud.common.message.server.file.UploadResponse;
 
 import java.io.File;
 import java.io.IOException;
@@ -111,6 +114,7 @@ public class ClientApplicationController implements Initializable {
                         LOGGER.warning("null message received.");
                         continue;
                     }
+                    logMessage(message);
                     Class<?> messageType = message.type();
                     if (messageType.equals(HandshakeResponse.class)) {
                         processHandshakeResponse((HandshakeResponse)message);
@@ -120,6 +124,9 @@ public class ClientApplicationController implements Initializable {
                     }
                     else if(messageType.equals(FileStructureResponse.class)) {
                         processFileStructureResponse((FileStructureResponse)message);
+                    }
+                    else if(messageType.equals(UploadResponse.class)) {
+                        processUploadResponse((UploadResponse)message);
                     }
                     else {
                         LOGGER.warning("Unexpected message received with type " + message.type());
@@ -135,13 +142,15 @@ public class ClientApplicationController implements Initializable {
         thread.setDaemon(true);
         thread.start();
 
-        AbstractMessage message = new HandshakeRequest();
-        networkService.sendMessage(message);
+        HandshakeRequest request = new HandshakeRequest(DEFAULT_USER_NAME);
+        networkService.sendMessage(request);
+    }
+
+    private void logMessage(final Message message) {
+        LOGGER.info(message.getClass().getSimpleName() + " received");
     }
 
     private void processHandshakeResponse(HandshakeResponse message) {
-        LOGGER.info(message.getClass().getSimpleName() + " received");
-        System.out.println(message.getClass().getSimpleName() + " received");
         if(message.isSuccessful()) {
             refreshServerFilesList();
         }
@@ -158,7 +167,6 @@ public class ClientApplicationController implements Initializable {
     }
 
     private void processFileMessage(final FileMessage message) {
-        LOGGER.info(message.getClass().getSimpleName() + " received");
         try {
             StandardOpenOption openOption = getOpenOption(message);
             Files.write(
@@ -179,6 +187,8 @@ public class ClientApplicationController implements Initializable {
         }
     }
 
+
+
     private String formNewFileName(final String fileName) {
         return currentFolderName + '/' + fileName;
     }
@@ -198,11 +208,31 @@ public class ClientApplicationController implements Initializable {
 
 
     private void processFileStructureResponse(FileStructureResponse message) {
-        LOGGER.info(message.getClass().getSimpleName() + " received");
         if (Platform.isFxApplicationThread()) {
             refreshFilesList(serverFilesView, message.getDescription());
         } else {
             Platform.runLater(() -> refreshFilesList(serverFilesView, message.getDescription()));
+        }
+    }
+
+    private void processUploadResponse(final UploadResponse response) {
+        if( response.isSuccessful() ) {
+            if (!response.isComplete()) {
+                try {
+                    networkService.sendMessage(
+                            new FileMessage(
+                                    Paths.get(response.getFileName()),
+                                    response.getNextNumber(),
+                                    NetworkSettings.MAXIMAL_MESSAGE_SIZE_IN_BYTES
+                            )
+                    );
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        else {
+            refreshServerFilesList();
         }
     }
 
@@ -217,17 +247,44 @@ public class ClientApplicationController implements Initializable {
     public void download() {
         final ObservableList<FileDescription> fileDescriptionsList = serverFilesView.getSelectionModel().getSelectedItems();
         if( fileDescriptionsList == null || fileDescriptionsList.isEmpty() ) {
-            LOGGER.warning("Empty files list to download");
+            LOGGER.warning("Empty files list to download.");
         }
         for(int i = 0; i < fileDescriptionsList.size(); ++i) {
             FileDescription description = fileDescriptionsList.get(i);
             LOGGER.info("Copying file " + description.getName());
-            sendFileRequest(description);
+            sendDownloadRequest(description);
         }
     }
 
-    private void sendFileRequest(@NotNull final FileDescription fileDescription) {
+    private void sendDownloadRequest(@NotNull final FileDescription fileDescription) {
         String fileName = fileDescription.getName() + "." + fileDescription.getExtension();
         networkService.sendMessage(new DownloadRequest(DEFAULT_USER_NAME, fileName, 0));
+    }
+
+    public void upload() {
+        final ObservableList<FileDescription> fileDescriptionsList = clientFilesView.getSelectionModel().getSelectedItems();
+        if( fileDescriptionsList == null || fileDescriptionsList.isEmpty() ) {
+            LOGGER.warning("Empty files list to upload.");
+        }
+        for(int i = 0; i < fileDescriptionsList.size(); ++i) {
+            FileDescription description = fileDescriptionsList.get(i);
+            LOGGER.info("Copying file " + description.getName());
+            try {
+                sendUploadRequest(description);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void sendUploadRequest(@NotNull final FileDescription fileDescription) throws IOException {
+        String filename = fileDescription.getName() + "." + fileDescription.getExtension();
+        networkService.sendMessage(
+                new FileMessage(
+                        Paths.get(formNewFileName(filename)),
+                        0,
+                        NetworkSettings.MAXIMAL_MESSAGE_SIZE_IN_BYTES + 1000
+                )
+        );
     }
 }

@@ -8,7 +8,7 @@ import ru.ryabtsev.cloud.common.message.AbstractMessage;
  * Base class for requests depend from something.
  */
 @Getter
-public class UserRequest extends AbstractMessage {
+public class UserRequest extends AbstractMessage implements Request{
     private final String login;
 
     /**

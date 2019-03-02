@@ -10,8 +10,10 @@ import ru.ryabtsev.cloud.common.message.AbstractMessage;
 import ru.ryabtsev.cloud.common.message.client.file.DownloadRequest;
 import ru.ryabtsev.cloud.common.message.client.file.FileStructureRequest;
 import ru.ryabtsev.cloud.common.message.client.HandshakeRequest;
+import ru.ryabtsev.cloud.common.message.client.file.UploadRequest;
 import ru.ryabtsev.cloud.common.message.server.file.FileStructureResponse;
 import ru.ryabtsev.cloud.common.message.server.HandshakeResponse;
+import ru.ryabtsev.cloud.common.message.server.file.UploadResponse;
 import ru.ryabtsev.cloud.server.service.DummyUserService;
 import ru.ryabtsev.cloud.server.service.UserService;
 
@@ -19,14 +21,20 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.logging.Logger;
 
 public class ServerHandler extends ChannelInboundHandlerAdapter {
 
-
     private static final Logger LOGGER = Logger.getLogger(ServerHandler.class.getSimpleName());
 
     private static UserService userService = new DummyUserService();
+
+    private String userLogin = "";
+
+    private String userRootFolder = "";
+
+    private String userCurrentFolder = "";
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object object) throws Exception {
@@ -39,7 +47,13 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
                 processHandshakeRequest(ctx, (HandshakeRequest) message);
             }
             else if (message.type().equals(DownloadRequest.class)) {
-                processFileRequest(ctx, (DownloadRequest) message);
+                processDownloadRequest(ctx, (DownloadRequest) message);
+            }
+            else if (message.type().equals(UploadRequest.class)) {
+                processUploadRequest(ctx, (UploadRequest) message);
+            }
+            else if (message.type().equals(FileMessage.class)) {
+                processFileMessage(ctx, (FileMessage) message);
             }
             else if (message.type().equals(FileStructureRequest.class)) {
                 processFileStructureRequest(ctx, (FileStructureRequest) message);
@@ -60,18 +74,21 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
     }
 
     private void processHandshakeRequest(ChannelHandlerContext ctx, HandshakeRequest request) {
-        logRequest(request);
+        logMessage(request);
+        userLogin = request.getLogin();
+        userRootFolder = userService.getRootFolder(userLogin);
+        userCurrentFolder = userService.getCurrentFolder(userLogin);
         HandshakeResponse response = new HandshakeResponse(true);
         ctx.writeAndFlush(response);
     }
 
-    private void logRequest(AbstractMessage request) {
+    private void logMessage(AbstractMessage request) {
         System.out.println(request.getClass().getSimpleName() + " received");
     }
 
-    private void processFileRequest(final ChannelHandlerContext ctx, final DownloadRequest request) throws IOException {
-        logRequest(request);
-        final String fileName = userService.getFolder(request.getLogin()) + '/' + request.getFileName();
+    private void processDownloadRequest(final ChannelHandlerContext ctx, final DownloadRequest request) throws IOException {
+        logMessage(request);
+        final String fileName = userService.getCurrentFolder(request.getLogin()) + '/' + request.getFileName();
         if (Files.exists(Paths.get(fileName))) {
             FileMessage fm = new FileMessage(
                     Paths.get(fileName),
@@ -91,9 +108,53 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
+    private void processUploadRequest(final ChannelHandlerContext ctx, final UploadRequest request) {
+        logMessage(request);
+        final String fileName = userService.getCurrentFolder(request.getLogin()) + '/' + request.getFileName();
+
+    }
+
+    private void processFileMessage(ChannelHandlerContext ctx, FileMessage message) {
+        logMessage(message);
+        try {
+            StandardOpenOption openOption = getOpenOption(message);
+            Files.write(
+                    Paths.get( formNewFileName(message.getFileName()) ),
+                    message.getData(),
+                    openOption
+            );
+
+            UploadResponse response = message.hasNext() ?
+                    new UploadResponse(message.getFileName(), message.getPartNumber()) :
+                    new UploadResponse(message.getFileName());
+
+            ctx.writeAndFlush(response);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String formNewFileName(String fileName) {
+        return userCurrentFolder + '/' + fileName;
+    }
+
+    private StandardOpenOption getOpenOption(final FileMessage message) {
+        StandardOpenOption result = StandardOpenOption.CREATE;
+        if(Files.exists(Paths.get(formNewFileName( message.getFileName() )))) {
+            if(message.getPartNumber() == 0) {
+                result = StandardOpenOption.WRITE;
+            }
+            else {
+                result = StandardOpenOption.APPEND;
+            }
+        }
+        return result;
+    }
+
+
     private void processFileStructureRequest(final ChannelHandlerContext ctx, final FileStructureRequest request) {
-        logRequest(request);
-        String name = userService.getFolder(request.getLogin()) + request.getFolderName();
+        logMessage(request);
+        String name = userService.getCurrentFolder(request.getLogin()) + request.getFolderName();
         Path path = Paths.get(name);
         if(Files.exists(path) && Files.isDirectory(path)) {
             final FileDescription description = new FileDescription(path.toFile());
@@ -101,4 +162,6 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
             ctx.writeAndFlush(response);
         }
     }
+
+
 }

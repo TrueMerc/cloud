@@ -19,4 +19,9 @@ public class FileStructureResponse extends AbstractMessage implements FileRespon
     public FileStructureResponse(final FileDescription description) {
         this.description = description;
     }
+
+    @Override
+    public boolean isSuccessful() {
+        return true;
+    }
 }

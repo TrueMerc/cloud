@@ -17,7 +17,7 @@
         <VBox HBox.hgrow="ALWAYS">
             <TableView fx:id="clientFilesView" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS"/>
             <HBox>
-                <Button fx:id="clientCopyButton"  HBox.hgrow="ALWAYS">
+                <Button fx:id="clientCopyButton" onAction="#upload" HBox.hgrow="ALWAYS">
                     <text> <CommandText fx:constant="COPY"/>  </text>
                 </Button>
                 <Button fx:id="clientCutButton" HBox.hgrow="ALWAYS">
