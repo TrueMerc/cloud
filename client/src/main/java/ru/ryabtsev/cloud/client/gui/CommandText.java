@@ -5,11 +5,11 @@ package ru.ryabtsev.cloud.client.gui;
  */
 public class CommandText {
 
-    public static final String COPY = "Copy";
+    public static final String COPY = "_Copy";
 
-    public static final String CUT = "Cut";
+    public static final String CUT = "C_ut";
 
-    public static final String DELETE = "Delete";
+    public static final String DELETE = "_Delete";
 
-    public static final String REFRESH = "Refresh";
+    public static final String REFRESH = "_Refresh";
 }

@@ -2,32 +2,49 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import java.lang.String?>
 <?import ru.ryabtsev.cloud.client.gui.CommandText?>
 
 <VBox xmlns:fx="http://javafx.com/javafx"
       fx:controller="ru.ryabtsev.cloud.client.ClientApplicationController"
       alignment="CENTER"
       prefHeight="480" prefWidth="640">
-    <fx:define>
-        <String fx:id="COPY_BUTTON_TEXT" fx:value = "Copy" />
-    </fx:define>
+
     <HBox VBox.vgrow="ALWAYS">
         <!--Client side controls -->
         <VBox HBox.hgrow="ALWAYS">
             <TableView fx:id="clientFilesView" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS"/>
             <HBox>
                 <Button fx:id="clientCopyButton" onAction="#upload" HBox.hgrow="ALWAYS">
-                    <text> <CommandText fx:constant="COPY"/>  </text>
+                    <text>
+                        <CommandText fx:constant="COPY"/>
+                    </text>
+                    <tooltip>
+                        <Tooltip text="Copy selected files from client to server"/>
+                    </tooltip>
                 </Button>
                 <Button fx:id="clientCutButton" HBox.hgrow="ALWAYS">
-                    <text> <CommandText fx:constant="CUT"/> </text>
+                    <text>
+                        <CommandText fx:constant="CUT"/>
+                    </text>
+                    <tooltip>
+                        <Tooltip text="Copy selected files from client to server and remove them from client"/>
+                    </tooltip>
                 </Button>
                 <Button fx:id="clientDeleteButton" HBox.hgrow="ALWAYS">
-                    <text> <CommandText fx:constant="DELETE"/> </text>
+                    <text>
+                        <CommandText fx:constant="DELETE"/>
+                    </text>
+                    <tooltip>
+                        <Tooltip text="Delete selected files from client"/>
+                    </tooltip>
                 </Button>
                 <Button fx:id="clientRefreshButton" onAction="#refreshClientFilesList" HBox.hgrow="ALWAYS">
-                    <text> <CommandText fx:constant="REFRESH"/> </text>
+                    <text>
+                        <CommandText fx:constant="REFRESH"/>
+                    </text>
+                    <tooltip>
+                        <Tooltip text = "Refresh client files list"/>
+                    </tooltip>
                 </Button>
             </HBox>
         </VBox>
@@ -37,16 +54,36 @@
             <TableView fx:id="serverFilesView" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS"/>
             <HBox>
                 <Button fx:id="serverCopyButton" onAction="#download" HBox.hgrow="ALWAYS">
-                    <text> <CommandText fx:constant="COPY"/>  </text>
+                    <text>
+                        <CommandText fx:constant="COPY"/>
+                    </text>
+                    <tooltip>
+                        <Tooltip text="Copy selected files from server to client"/>
+                    </tooltip>
                 </Button>
                 <Button fx:id="serverCutButton" HBox.hgrow="ALWAYS">
-                    <text> <CommandText fx:constant="CUT"/> </text>
+                    <text>
+                        <CommandText fx:constant="CUT"/>
+                    </text>
+                    <tooltip>
+                        <Tooltip text="Copy selected files from server to client and remove them from server"/>
+                    </tooltip>
                 </Button>
                 <Button fx:id="serverDeleteButton" HBox.hgrow="ALWAYS">
-                    <text> <CommandText fx:constant="DELETE"/> </text>
+                    <text>
+                        <CommandText fx:constant="DELETE"/>
+                    </text>
+                    <tooltip>
+                        <Tooltip text="Delete selected files from server"/>
+                    </tooltip>
                 </Button>
                 <Button fx:id="serverRefreshButton" onAction="#refreshServerFilesList" HBox.hgrow="ALWAYS">
-                    <text> <CommandText fx:constant="REFRESH"/> </text>
+                    <text>
+                        <CommandText fx:constant="REFRESH"/>
+                    </text>
+                    <tooltip>
+                        <Tooltip text="Refresh server files list"/>
+                    </tooltip>
                 </Button>
             </HBox>
         </VBox>

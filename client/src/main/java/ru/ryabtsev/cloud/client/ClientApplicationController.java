@@ -18,7 +18,6 @@ import ru.ryabtsev.cloud.common.message.Message;
 import ru.ryabtsev.cloud.common.message.client.file.DownloadRequest;
 import ru.ryabtsev.cloud.common.message.client.file.FileStructureRequest;
 import ru.ryabtsev.cloud.common.message.client.HandshakeRequest;
-import ru.ryabtsev.cloud.common.message.client.file.UploadRequest;
 import ru.ryabtsev.cloud.common.message.server.file.FileStructureResponse;
 import ru.ryabtsev.cloud.common.message.server.HandshakeResponse;
 import ru.ryabtsev.cloud.common.message.server.file.UploadResponse;
@@ -66,14 +65,14 @@ public class ClientApplicationController implements Initializable {
     private void initializeClientList() {
         currentFolderName = DEFAULT_FOLDER_NAME;//System.getProperty("user.home");
 
-
-        addColumnsToFilesTableView( clientFilesView );
+        initializeTableView( clientFilesView );
         refreshClientFilesList();
     }
 
-    private static void addColumnsToFilesTableView(TableView<FileDescription> tableView) {
+    private static void initializeTableView(TableView<FileDescription> tableView) {
         TableColumn<FileDescription, String> tcName = new TableColumn<>("Name");
         tcName.setCellValueFactory(new PropertyValueFactory<>("name"));
+
         TableColumn<FileDescription, String> tcExtension = new TableColumn<>("Extension");
         tcExtension.setCellValueFactory(new PropertyValueFactory<>("extension"));
 
@@ -87,6 +86,8 @@ public class ClientApplicationController implements Initializable {
         tcAttributes.setCellValueFactory(new PropertyValueFactory<>("attributes"));
 
         tableView.getColumns().addAll( tcName, tcExtension, tcSize, tcDate, tcAttributes );
+
+        tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 
     @FXML
@@ -99,7 +100,7 @@ public class ClientApplicationController implements Initializable {
     }
 
     private void initializeServerList() {
-        addColumnsToFilesTableView( serverFilesView );
+        initializeTableView( serverFilesView );
     }
 
     private void initializeNetwork() {
@@ -187,8 +188,6 @@ public class ClientApplicationController implements Initializable {
         }
     }
 
-
-
     private String formNewFileName(final String fileName) {
         return currentFolderName + '/' + fileName;
     }
@@ -205,7 +204,6 @@ public class ClientApplicationController implements Initializable {
         }
         return result;
     }
-
 
     private void processFileStructureResponse(FileStructureResponse message) {
         if (Platform.isFxApplicationThread()) {
@@ -230,9 +228,9 @@ public class ClientApplicationController implements Initializable {
                     e.printStackTrace();
                 }
             }
-        }
-        else {
-            refreshServerFilesList();
+            else {
+                refreshServerFilesList();
+            }
         }
     }
 
