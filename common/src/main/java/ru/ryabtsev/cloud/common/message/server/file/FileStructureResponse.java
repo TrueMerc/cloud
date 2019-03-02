@@ -1,4 +1,4 @@
-package ru.ryabtsev.cloud.common.message.server;
+package ru.ryabtsev.cloud.common.message.server.file;
 
 import lombok.Getter;
 import ru.ryabtsev.cloud.common.FileDescription;

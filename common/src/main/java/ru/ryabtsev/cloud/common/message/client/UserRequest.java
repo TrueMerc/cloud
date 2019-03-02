@@ -15,7 +15,7 @@ public class UserRequest extends Message {
      * Constructs new user request.
      * @param login user login.
      */
-    UserRequest(@NotNull final String login) {
+    public UserRequest(@NotNull final String login) {
         this.login = login;
     }
 }

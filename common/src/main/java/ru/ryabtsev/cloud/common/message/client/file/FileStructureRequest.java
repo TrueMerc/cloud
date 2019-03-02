@@ -1,8 +1,9 @@
-package ru.ryabtsev.cloud.common.message.client;
+package ru.ryabtsev.cloud.common.message.client.file;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import ru.ryabtsev.cloud.common.message.Message;
+import ru.ryabtsev.cloud.common.message.client.UserRequest;
 
 /**
  * Implements client request to server to get structure of folder with given name.

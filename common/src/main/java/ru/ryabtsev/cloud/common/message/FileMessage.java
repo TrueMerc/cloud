@@ -33,7 +33,7 @@ public class FileMessage extends Message {
 
         long tailSize = determineTailSize( path, partNumber, maximalSize );
 
-        if(tailSize > 0) {
+        if(tailSize >= 0) {
             isTail = tailSize < maximalSize;
             int payloadSize = (int)((isTail) ? tailSize : maximalSize);
             data = new byte[payloadSize];
