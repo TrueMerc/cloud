@@ -8,7 +8,7 @@
 
 <VBox fx:id="parentWindow"
       alignment="center"
-      style="-fx-background-image: url(wall.png);"
+      style="-fx-background-color: #0ef7d0"
       xmlns="http://javafx.com/javafx/8.0.112-ea"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="ru.ryabtsev.cloud.client.LoginController">

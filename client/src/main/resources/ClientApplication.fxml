@@ -16,7 +16,7 @@
             </graphic>
             <MenuItem text="E_xit" onAction="#exitApplication" accelerator="Shortcut + Q">
                 <graphic>
-                    <FontAwesomeIconView glyphName="CLOSE" glyphSize="-fx-fill: black" />
+                    <FontAwesomeIconView glyphName="CLOSE" glyphStyle="-fx-fill: black" />
                 </graphic>
             </MenuItem>
         </Menu>
@@ -26,13 +26,13 @@
             </graphic>
             <MenuItem text="_About" onAction="#aboutDialog" accelerator="F1">
                 <graphic>
-                    <FontAwesomeIconView glyphName="INFO_CIRCLE" glyphSize="-fx-fill: black"/>
+                    <FontAwesomeIconView glyphName="INFO_CIRCLE" glyphStyle="-fx-fill: black"/>
                 </graphic>
             </MenuItem>
         </Menu>
     </MenuBar>
     <children>
-        <HBox VBox.vgrow="ALWAYS">
+        <SplitPane orientation="HORIZONTAL" VBox.vgrow="ALWAYS">
             <!--Client side controls -->
             <VBox HBox.hgrow="ALWAYS">
                 <TableView fx:id="clientFilesView" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS"/>
@@ -136,6 +136,6 @@
                     </Button>
                 </HBox>
             </VBox>
-        </HBox>
+        </SplitPane>
     </children>
 </VBox>

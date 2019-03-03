@@ -27,7 +27,7 @@ public class ClientApplication extends Application {
         final FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Login.fxml"));
         Parent root =  fxmlLoader.load();
 
-        //FontAwesomeIcon.
+        //FontAwesomeIcon.CLOse
 
         Scene scene = new Scene(root, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         scene.setFill(Color.TRANSPARENT);
