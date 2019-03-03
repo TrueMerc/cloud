@@ -14,13 +14,21 @@
             <graphic>
                 <FontAwesomeIconView glyphName="FILE" glyphStyle="-fx-fill: black" />
             </graphic>
-            <MenuItem text="E_xit" onAction="#exitApplication"/>
+            <MenuItem text="E_xit" onAction="#exitApplication" accelerator="Shortcut + Q">
+                <graphic>
+                    <FontAwesomeIconView glyphName="CLOSE" glyphSize="-fx-fill: black" />
+                </graphic>
+            </MenuItem>
         </Menu>
         <Menu text="_Help">
             <graphic>
                 <FontAwesomeIconView glyphName="QUESTION_CIRCLE" glyphStyle="-fx-fill: black" />
             </graphic>
-            <MenuItem text="_About"/>
+            <MenuItem text="_About" onAction="#aboutDialog" accelerator="F1">
+                <graphic>
+                    <FontAwesomeIconView glyphName="INFO_CIRCLE" glyphSize="-fx-fill: black"/>
+                </graphic>
+            </MenuItem>
         </Menu>
     </MenuBar>
     <children>
@@ -45,6 +53,7 @@
                         <graphic>
                             <FontAwesomeIconView glyphName="CUT" glyphStyle="-fx-fill: black" />
                         </graphic>
+
                         <text>
                             <CommandText fx:constant="CUT"/>
                         </text>

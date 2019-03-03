@@ -19,12 +19,15 @@ public class ClientApplication extends Application {
     private static final int DEFAULT_WIDTH = 640;
     private static final int DEFAULT_HEIGHT = 480;
 
+    public static Stage MAIN_WINDOW;
+
     @Override
     public void start(Stage primaryStage) throws Exception {
+        MAIN_WINDOW = primaryStage;
         final FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Login.fxml"));
         Parent root =  fxmlLoader.load();
 
-        //FontAwesomeIcon.REM
+        //FontAwesomeIcon.
 
         Scene scene = new Scene(root, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         scene.setFill(Color.TRANSPARENT);
@@ -32,7 +35,6 @@ public class ClientApplication extends Application {
         primaryStage.setTitle("Cloud client");
         primaryStage.getIcons().add(new Image("/cloud_up_icon_white_background.png"));
         primaryStage.show();
-
     }
 
     public static void main(String[] args) {

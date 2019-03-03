@@ -7,7 +7,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 import org.jetbrains.annotations.NotNull;
+import ru.ryabtsev.cloud.client.gui.dialog.AboutDialog;
 import ru.ryabtsev.cloud.client.service.NettyNetworkService;
 import ru.ryabtsev.cloud.client.service.NetworkService;
 import ru.ryabtsev.cloud.common.FileDescription;
@@ -318,5 +322,18 @@ public class ClientApplicationController implements Initializable {
     @FXML
     private void exitApplication() {
         Platform.exit();
+    }
+
+    @FXML
+    private void aboutDialog() {
+        try {
+            AboutDialog dialog = new AboutDialog(ClientApplication.MAIN_WINDOW);
+            Window window = dialog.getDialogPane().getScene().getWindow();
+            window.setOnCloseRequest(event -> window.hide());
+            dialog.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }

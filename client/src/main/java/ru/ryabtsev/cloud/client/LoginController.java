@@ -36,7 +36,7 @@ public class LoginController {
             try {
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/ClientApplication.fxml"));
                 final Parent root = fxmlLoader.load();
-                Scene scene = new Scene( root, parentWindow.getWidth(), parentWindow.getHeight() );
+                final Scene scene = new Scene( root, parentWindow.getWidth(), parentWindow.getHeight() );
                 ((Stage)parentWindow.getScene().getWindow()).setScene(scene);
             } catch (IOException e) {
                 e.printStackTrace();
