@@ -271,9 +271,7 @@ public class ClientApplicationController implements Initializable {
         copy(ApplicationSide.SERVER, ApplicationSide.CLIENT);
     }
 
-    @FXML
-    @SneakyThrows
-    private void cutAndDownload() {
+    public void cutAndDownload() {
         download();
         serverDelete();
     }
@@ -282,7 +280,6 @@ public class ClientApplicationController implements Initializable {
         copy(ApplicationSide.CLIENT, ApplicationSide.SERVER);
     }
 
-    @SneakyThrows
     public void cutAndUpload() {
         upload();
         clientDelete();

@@ -38,11 +38,6 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 
     private static UserService userService = new JdbcUserServiceBean(SERVER_STORAGE_ROOT);
 
-
-    private String userLogin = "";
-
-    private String userRootFolder = "";
-
     private String userCurrentFolder = "";
 
     @Override
@@ -93,8 +88,8 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
         logMessage(request);
         boolean result = userService.authenticate(request.getLogin(), request.getPassword());
         if(result) {
-            userLogin = request.getLogin();
-            userRootFolder = userService.getRootFolder(userLogin);
+            String userLogin = request.getLogin();
+            String userRootFolder = userService.getRootFolder(userLogin);
             userCurrentFolder = userService.getCurrentFolder(userLogin);
         }
         ctx.writeAndFlush(new AuthenticationResponse(true));

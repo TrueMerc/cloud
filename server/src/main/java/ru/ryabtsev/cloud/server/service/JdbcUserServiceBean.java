@@ -34,9 +34,8 @@ public class JdbcUserServiceBean implements UserService {
     @Override
     @SneakyThrows
     public boolean authenticate(@NotNull String login, @NotNull String password) {
-        final String query = DEFAULT_SELECT_QUERY;
         connectionManager.connect();
-        PreparedStatement statement = connectionManager.createPreparedStatement(query);
+        PreparedStatement statement = connectionManager.createPreparedStatement(DEFAULT_SELECT_QUERY);
         statement.setString( 1, login );
         ResultSet resultSet = statement.executeQuery();
         boolean result = false;
