@@ -67,4 +67,12 @@ public class FileDescription implements Serializable {
             this.name = fileName;
         }
     }
+
+    /**
+     * Returns file full name (name + extension).
+     * @return
+     */
+    public String getFullName() {
+        return name + '.' + extension;
+    }
 }

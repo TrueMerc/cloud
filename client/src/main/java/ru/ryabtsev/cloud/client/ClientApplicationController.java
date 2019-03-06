@@ -7,12 +7,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 import javafx.stage.Window;
+import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import ru.ryabtsev.cloud.client.gui.dialog.AboutDialog;
-import ru.ryabtsev.cloud.client.service.NettyNetworkService;
 import ru.ryabtsev.cloud.client.service.NetworkService;
 import ru.ryabtsev.cloud.common.FileDescription;
 import ru.ryabtsev.cloud.common.FileOperations;
@@ -22,7 +20,6 @@ import ru.ryabtsev.cloud.common.message.AbstractMessage;
 import ru.ryabtsev.cloud.common.message.Message;
 import ru.ryabtsev.cloud.common.message.client.file.DownloadRequest;
 import ru.ryabtsev.cloud.common.message.client.file.FileStructureRequest;
-import ru.ryabtsev.cloud.common.message.client.HandshakeRequest;
 import ru.ryabtsev.cloud.common.message.server.file.FileStructureResponse;
 import ru.ryabtsev.cloud.common.message.server.HandshakeResponse;
 import ru.ryabtsev.cloud.common.message.server.file.UploadResponse;
@@ -178,7 +175,7 @@ public class ClientApplicationController implements Initializable {
         try {
             StandardOpenOption openOption = getOpenOption(message);
             Files.write(
-                    Paths.get( formNewFileName(message.getFileName()) ),
+                    Paths.get( formDirectoryDependentFileName(message.getFileName()) ),
                     message.getData(),
                     openOption
             );
@@ -195,12 +192,12 @@ public class ClientApplicationController implements Initializable {
         }
     }
 
-    private String formNewFileName(final String fileName) {
+    private String formDirectoryDependentFileName(final String fileName) {
         return currentFolderName + '/' + fileName;
     }
 
     private StandardOpenOption getOpenOption(final FileMessage message) {
-        return FileOperations.getOpenOption(formNewFileName(message.getFileName()), message.getPartNumber() == 0);
+        return FileOperations.getOpenOption(formDirectoryDependentFileName(message.getFileName()), message.getPartNumber() == 0);
     }
 
     private void processFileStructureResponse(FileStructureResponse message) {
@@ -217,7 +214,7 @@ public class ClientApplicationController implements Initializable {
                 try {
                     networkService.sendMessage(
                             new FileMessage(
-                                    Paths.get(formNewFileName(response.getFileName())),
+                                    Paths.get(formDirectoryDependentFileName(response.getFileName())),
                                     response.getNextNumber(),
                                     NetworkSettings.MAXIMAL_PAYLOAD_SIZE_IN_BYTES
                             )
@@ -240,12 +237,36 @@ public class ClientApplicationController implements Initializable {
         view.getItems().setAll(description.getChildDescriptionList());
     }
 
+
+
+    @SneakyThrows
+    public void delete() {
+        final ObservableList<FileDescription> selectedFilesDescription = getSelectedFiles(ApplicationSide.CLIENT);
+        for( FileDescription description : selectedFilesDescription ) {
+            final String fileName = formDirectoryDependentFileName(description.getFullName());
+            Files.delete(Paths.get(fileName));
+        }
+        refreshClientFilesList();
+    }
+
     public void download() {
         copy(ApplicationSide.SERVER, ApplicationSide.CLIENT);
     }
 
+//    @SneakyThrows
+//    public void downloadAndCut() {
+//        download();
+//        delete();
+//    }
+
     public void upload() {
         copy(ApplicationSide.CLIENT, ApplicationSide.SERVER);
+    }
+
+    @SneakyThrows
+    public void cutAndUpload() {
+        upload();
+        delete();
     }
 
     private void copy(ApplicationSide from, ApplicationSide to) {
@@ -288,11 +309,10 @@ public class ClientApplicationController implements Initializable {
     }
 
     private void sendUploadRequest(@NotNull final FileDescription fileDescription) {
-        String filename = fileDescription.getName() + "." + fileDescription.getExtension();
         try {
             networkService.sendMessage(
                     new FileMessage(
-                            Paths.get(formNewFileName(filename)),
+                            Paths.get(formDirectoryDependentFileName(fileDescription.getFullName())),
                             0,
                             NetworkSettings.MAXIMAL_PAYLOAD_SIZE_IN_BYTES
                     )

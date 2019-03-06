@@ -49,7 +49,7 @@
                         </tooltip>
 
                     </Button>
-                    <Button fx:id="clientCutButton" HBox.hgrow="ALWAYS">
+                    <Button fx:id="clientCutButton" onAction="#cutAndUpload" HBox.hgrow="ALWAYS">
                         <graphic>
                             <FontAwesomeIconView glyphName="CUT" glyphStyle="-fx-fill: black" />
                         </graphic>
@@ -61,7 +61,7 @@
                             <Tooltip text="Copy selected files from client to server and remove them from client"/>
                         </tooltip>
                     </Button>
-                    <Button fx:id="clientDeleteButton" HBox.hgrow="ALWAYS">
+                    <Button fx:id="clientDeleteButton" onAction="#delete" HBox.hgrow="ALWAYS">
                         <graphic>
                             <FontAwesomeIconView glyphName="TRASH" glyphStyle="-fx-fill: black" />
                         </graphic>
