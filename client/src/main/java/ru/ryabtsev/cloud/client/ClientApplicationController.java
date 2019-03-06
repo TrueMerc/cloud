@@ -43,9 +43,6 @@ public class ClientApplicationController implements Initializable {
 
     private static final String DEFAULT_FOLDER_NAME = "./client_storage";
 
-    private static final String DEFAULT_USER_NAME = "admin";
-
-
     private static final Logger LOGGER = Logger.getLogger(ClientApplication.class.getSimpleName());
 
     @FXML
@@ -55,6 +52,8 @@ public class ClientApplicationController implements Initializable {
     TableView<FileDescription> serverFilesView = new TableView<>();
 
     private static NetworkService networkService = ClientApplication.networkService();
+
+    private String userName = ClientApplication.userName;
 
     private String currentFolderName;
 
@@ -151,7 +150,7 @@ public class ClientApplicationController implements Initializable {
         thread.setDaemon(true);
         thread.start();
 
-        networkService.sendMessage(new FileStructureRequest(DEFAULT_USER_NAME));
+        networkService.sendMessage(new FileStructureRequest(userName));
     }
 
     private void logMessage(final Message message) {
@@ -169,7 +168,7 @@ public class ClientApplicationController implements Initializable {
 
     @FXML
     private void refreshServerFilesList() {
-        AbstractMessage fileStructureRequest = new FileStructureRequest(DEFAULT_USER_NAME);
+        AbstractMessage fileStructureRequest = new FileStructureRequest(userName);
         networkService.sendMessage(fileStructureRequest);
         LOGGER.info(FileStructureRequest.class.getSimpleName() + " sent");
     }
@@ -184,7 +183,7 @@ public class ClientApplicationController implements Initializable {
             );
             if( message.hasNext() ) {
                 networkService.sendMessage(
-                        new DownloadRequest(DEFAULT_USER_NAME, message.getFileName(), message.getPartNumber() + 1)
+                        new DownloadRequest(userName, message.getFileName(), message.getPartNumber() + 1)
                 );
             }
             else {
@@ -313,9 +312,8 @@ public class ClientApplicationController implements Initializable {
 
     private void sendDownloadRequest(@NotNull final FileDescription fileDescription) {
         String fileName = fileDescription.getName() + "." + fileDescription.getExtension();
-        networkService.sendMessage(new DownloadRequest(DEFAULT_USER_NAME, fileName, 0));
+        networkService.sendMessage(new DownloadRequest(userName, fileName, 0));
     }
-
 
     @FXML
     private void exitApplication() {
@@ -332,6 +330,5 @@ public class ClientApplicationController implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 }

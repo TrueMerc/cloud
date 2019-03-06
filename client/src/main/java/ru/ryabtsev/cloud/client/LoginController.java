@@ -37,6 +37,7 @@ public class LoginController {
 
         if( authencticationService.authenticate(login.getText(), password.getText()) ) {
             try {
+                ClientApplication.userName = login.getText();
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/ClientApplication.fxml"));
                 final Parent root = fxmlLoader.load();
                 final Scene scene = new Scene( root, parentWindow.getWidth(), parentWindow.getHeight() );

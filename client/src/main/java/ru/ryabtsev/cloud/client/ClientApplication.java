@@ -24,6 +24,8 @@ public class ClientApplication extends Application {
 
     public static Stage MAIN_WINDOW;
 
+    public static String userName = "";
+
     private static final String DEFAULT_SERVER_HOST = "localhost";
     private static final int DEFAULT_SERVER_PORT = NetworkSettings.DEFAULT_PORT;
 
