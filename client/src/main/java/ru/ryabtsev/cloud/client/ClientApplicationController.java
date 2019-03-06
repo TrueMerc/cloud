@@ -45,8 +45,6 @@ public class ClientApplicationController implements Initializable {
 
     private static final String DEFAULT_USER_NAME = "admin";
 
-    private static final String DEFAULT_SERVER_HOST = "localhost";
-    private static final int DEFAULT_SERVER_PORT = NetworkSettings.DEFAULT_PORT;
 
     private static final Logger LOGGER = Logger.getLogger(ClientApplication.class.getSimpleName());
 
@@ -56,7 +54,7 @@ public class ClientApplicationController implements Initializable {
     @FXML
     TableView<FileDescription> serverFilesView = new TableView<>();
 
-    private static NetworkService networkService = new NettyNetworkService();;
+    private static NetworkService networkService = ClientApplication.networkService();
 
     private String currentFolderName;
 
@@ -72,7 +70,7 @@ public class ClientApplicationController implements Initializable {
     }
 
     private void initializeClientList() {
-        currentFolderName = DEFAULT_FOLDER_NAME;//System.getProperty("user.home");
+        currentFolderName = DEFAULT_FOLDER_NAME;
 
         initializeTableView( clientFilesView );
         refreshClientFilesList();
@@ -113,7 +111,7 @@ public class ClientApplicationController implements Initializable {
     }
 
     private void initializeNetwork() {
-        networkService.start(DEFAULT_SERVER_HOST, DEFAULT_SERVER_PORT);
+        //networkService.start(DEFAULT_SERVER_HOST, DEFAULT_SERVER_PORT);
 
         Thread thread = new Thread(()->{
             LOGGER.info("Listener thread started.");
@@ -153,8 +151,7 @@ public class ClientApplicationController implements Initializable {
         thread.setDaemon(true);
         thread.start();
 
-        HandshakeRequest request = new HandshakeRequest(DEFAULT_USER_NAME);
-        networkService.sendMessage(request);
+        networkService.sendMessage(new FileStructureRequest(DEFAULT_USER_NAME));
     }
 
     private void logMessage(final Message message) {
@@ -229,9 +226,9 @@ public class ClientApplicationController implements Initializable {
                 try {
                     networkService.sendMessage(
                             new FileMessage(
-                                    Paths.get(response.getFileName()),
+                                    Paths.get(formNewFileName(response.getFileName())),
                                     response.getNextNumber(),
-                                    NetworkSettings.MAXIMAL_MESSAGE_SIZE_IN_BYTES
+                                    NetworkSettings.MAXIMAL_PAYLOAD_SIZE_IN_BYTES
                             )
                     );
                 } catch (IOException e) {
@@ -264,6 +261,7 @@ public class ClientApplicationController implements Initializable {
         final ObservableList<FileDescription> selectedFilesDescription = getSelectedFiles(from);
         if( selectedFilesDescription == null || selectedFilesDescription.isEmpty() ) {
             LOGGER.warning( "There aren't files to copy");
+            return;
         }
 
         Consumer<FileDescription> onCopySendMethod = getOnCopySendMethod(from);
@@ -305,7 +303,7 @@ public class ClientApplicationController implements Initializable {
                     new FileMessage(
                             Paths.get(formNewFileName(filename)),
                             0,
-                            NetworkSettings.MAXIMAL_MESSAGE_SIZE_IN_BYTES + 1000
+                            NetworkSettings.MAXIMAL_PAYLOAD_SIZE_IN_BYTES
                     )
             );
         } catch (IOException e) {

@@ -11,6 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import ru.ryabtsev.cloud.client.service.AuthencticationService;
 import ru.ryabtsev.cloud.client.service.DummyAuthenticationService;
+import ru.ryabtsev.cloud.client.service.NetworkAuthenticationService;
 
 import java.io.IOException;
 
@@ -28,7 +29,9 @@ public class LoginController {
     @FXML
     VBox parentWindow;
 
-    private AuthencticationService authencticationService = new DummyAuthenticationService();
+    private AuthencticationService authencticationService = new NetworkAuthenticationService(
+            ClientApplication.networkService()
+    );
 
     public void authenticate(ActionEvent actionEvent) {
 

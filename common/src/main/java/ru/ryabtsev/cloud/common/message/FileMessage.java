@@ -23,23 +23,23 @@ public class FileMessage extends AbstractMessage {
      * Constructs file message with given file name.
      * @param path path corresponding to the file,
      * @param partNumber partNumber of file path which should be placed into this file message.
-     * @param maximalSize maximal size of this message in bytes (should be the same in one file transmission time).
+     * @param maximalPayloadSize maximal size of this message payload in bytes (should be the same in one file transmission time).
      * which is contained in the message in whole or in part.
      * @throws IOException
      */
-    public FileMessage(Path path, int partNumber, int maximalSize) throws IOException {
+    public FileMessage(Path path, int partNumber, int maximalPayloadSize) throws IOException {
         this.fileName = path.getFileName().toString();
         this.partNumber = partNumber;
 
-        long tailSize = determineTailSize( path, partNumber, maximalSize );
+        long tailSize = determineTailSize( path, partNumber, maximalPayloadSize );
 
         if(tailSize >= 0) {
-            isTail = tailSize < maximalSize;
-            int payloadSize = (int)((isTail) ? tailSize : maximalSize);
+            isTail = tailSize < maximalPayloadSize;
+            int payloadSize = (int)((isTail) ? tailSize : maximalPayloadSize);
             data = new byte[payloadSize];
             ByteBuffer buffer = ByteBuffer.wrap(data);
             FileChannel channel = FileChannel.open(path);
-            channel.position((long)partNumber * maximalSize);
+            channel.position((long)partNumber * maximalPayloadSize);
             int bytesRead = channel.read(buffer);
             if( bytesRead < payloadSize ) {
                 throw new IOException("Can't read enough bytes.");

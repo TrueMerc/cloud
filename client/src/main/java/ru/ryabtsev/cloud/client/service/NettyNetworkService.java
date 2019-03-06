@@ -24,7 +24,7 @@ public class NettyNetworkService implements NetworkService {
             out = new ObjectEncoderOutputStream(socket.getOutputStream());
             in = new ObjectDecoderInputStream(
                     socket.getInputStream(),
-                    NetworkSettings.MAXIMAL_MESSAGE_SIZE_IN_BYTES + 1000
+                    NetworkSettings.MAXIMAL_MESSAGE_SIZE_IN_BYTES
             );
         } catch (IOException e) {
             e.printStackTrace();
