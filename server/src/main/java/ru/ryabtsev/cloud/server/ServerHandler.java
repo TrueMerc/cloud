@@ -3,21 +3,23 @@ package ru.ryabtsev.cloud.server;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.ReferenceCountUtil;
+import lombok.SneakyThrows;
 import ru.ryabtsev.cloud.common.FileDescription;
 import ru.ryabtsev.cloud.common.FileOperations;
 import ru.ryabtsev.cloud.common.NetworkSettings;
 import ru.ryabtsev.cloud.common.message.FileMessage;
 import ru.ryabtsev.cloud.common.message.AbstractMessage;
 import ru.ryabtsev.cloud.common.message.client.AuthenticationRequest;
+import ru.ryabtsev.cloud.common.message.client.file.DeleteRequest;
 import ru.ryabtsev.cloud.common.message.client.file.DownloadRequest;
 import ru.ryabtsev.cloud.common.message.client.file.FileStructureRequest;
 import ru.ryabtsev.cloud.common.message.client.HandshakeRequest;
 import ru.ryabtsev.cloud.common.message.client.file.UploadRequest;
 import ru.ryabtsev.cloud.common.message.server.AuthenticationResponse;
+import ru.ryabtsev.cloud.common.message.server.file.DeleteResponse;
 import ru.ryabtsev.cloud.common.message.server.file.FileStructureResponse;
 import ru.ryabtsev.cloud.common.message.server.HandshakeResponse;
 import ru.ryabtsev.cloud.common.message.server.file.UploadResponse;
-import ru.ryabtsev.cloud.server.service.DummyUserService;
 import ru.ryabtsev.cloud.server.service.JdbcUserServiceBean;
 import ru.ryabtsev.cloud.server.service.UserService;
 
@@ -59,6 +61,9 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
             else if (message.type().equals(DownloadRequest.class)) {
                 processDownloadRequest(ctx, (DownloadRequest) message);
             }
+            else if (message.type().equals(DeleteRequest.class)) {
+                processDeleteRequest(ctx, (DeleteRequest) message);
+            }
             else if (message.type().equals(UploadRequest.class)) {
                 processUploadRequest(ctx, (UploadRequest) message);
             }
@@ -77,13 +82,12 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
+
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         cause.printStackTrace();
         ctx.close();
     }
-
-
 
     private void processAuthenticationRequest(ChannelHandlerContext ctx, AuthenticationRequest request) {
         logMessage(request);
@@ -98,9 +102,6 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 
     private void processHandshakeRequest(ChannelHandlerContext ctx, HandshakeRequest request) {
         logMessage(request);
-//        userLogin = request.getLogin();
-//        userRootFolder = SERVER_STORAGE_ROOT + '/' + userService.getRootFolder(userLogin);
-//        userCurrentFolder = SERVER_STORAGE_ROOT + '/' + userService.getCurrentFolder(userLogin);
         HandshakeResponse response = new HandshakeResponse(true);
         ctx.writeAndFlush(response);
     }
@@ -111,10 +112,12 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 
     private void processDownloadRequest(final ChannelHandlerContext ctx, final DownloadRequest request) throws IOException {
         logMessage(request);
-        final String fileName = userService.getCurrentFolder(request.getLogin()) + '/' + request.getFileName();
-        if (Files.exists(Paths.get(fileName))) {
+        //final String fileName = userService.getCurrentFolder(request.getLogin()) + '/' + request.getFileName();
+        final String fileName = formFolderDependentFileName(request.getFileName());
+        final Path path = Paths.get(fileName);
+        if (Files.exists(path)) {
             FileMessage fm = new FileMessage(
-                    Paths.get(fileName),
+                    path,
                     request.getPartNumber(),
                     NetworkSettings.MAXIMAL_PAYLOAD_SIZE_IN_BYTES
             );
@@ -131,6 +134,20 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
+    @SneakyThrows
+    private void processDeleteRequest(ChannelHandlerContext ctx, DeleteRequest request) {
+        final String fileName = formFolderDependentFileName(request.getFileName());
+        final Path path = Paths.get(fileName);
+        if(Files.exists(path)) {
+            Files.delete(path);
+            ctx.writeAndFlush(new DeleteResponse(true));
+        }
+        else {
+            ctx.writeAndFlush(new DeleteResponse(false));
+            LOGGER.warning("File with given name " + fileName + " doesn't exists.");
+        }
+    }
+
     private void processUploadRequest(final ChannelHandlerContext ctx, final UploadRequest request) {
         logMessage(request);
         final String fileName = userService.getCurrentFolder(request.getLogin()) + '/' + request.getFileName();
@@ -142,7 +159,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
         try {
             StandardOpenOption openOption = getOpenOption(message);
             Files.write(
-                    Paths.get( formNewFileName(message.getFileName()) ),
+                    Paths.get( formFolderDependentFileName(message.getFileName()) ),
                     message.getData(),
                     openOption
             );
@@ -157,12 +174,12 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
-    private String formNewFileName(String fileName) {
+    private String formFolderDependentFileName(String fileName) {
         return userCurrentFolder + '/' + fileName;
     }
 
     private StandardOpenOption getOpenOption(final FileMessage message) {
-        return FileOperations.getOpenOption(formNewFileName(message.getFileName()), message.getPartNumber() == 0);
+        return FileOperations.getOpenOption(formFolderDependentFileName(message.getFileName()), message.getPartNumber() == 0);
     }
 
 

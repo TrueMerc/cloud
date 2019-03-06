@@ -14,7 +14,9 @@ public class DownloadRequest extends UserDependentRequest implements FileRequest
 
     /**
      * Constructs download file request with given file name.
+     * @param login user login.
      * @param fileName name of the file, which is requested by client.
+     * @param partNumber file part number.
      */
     public DownloadRequest(@NotNull final String login, @NotNull final String fileName, int partNumber) {
         super(login);

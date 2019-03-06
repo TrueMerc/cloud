@@ -61,7 +61,7 @@
                             <Tooltip text="Copy selected files from client to server and remove them from client"/>
                         </tooltip>
                     </Button>
-                    <Button fx:id="clientDeleteButton" onAction="#delete" HBox.hgrow="ALWAYS">
+                    <Button fx:id="clientDeleteButton" onAction="#clientDelete" HBox.hgrow="ALWAYS">
                         <graphic>
                             <FontAwesomeIconView glyphName="TRASH" glyphStyle="-fx-fill: black" />
                         </graphic>
@@ -101,7 +101,7 @@
                             <Tooltip text="Copy selected files from server to client"/>
                         </tooltip>
                     </Button>
-                    <Button fx:id="serverCutButton" HBox.hgrow="ALWAYS">
+                    <Button fx:id="serverCutButton" onAction="#cutAndDownload" HBox.hgrow="ALWAYS">
                         <graphic>
                             <FontAwesomeIconView glyphName="CUT" glyphStyle="-fx-fill: black" />
                         </graphic>
@@ -112,7 +112,7 @@
                             <Tooltip text="Copy selected files from server to client and remove them from server"/>
                         </tooltip>
                     </Button>
-                    <Button fx:id="serverDeleteButton" HBox.hgrow="ALWAYS">
+                    <Button fx:id="serverDeleteButton" onAction="#serverDelete" HBox.hgrow="ALWAYS">
                         <graphic>
                             <FontAwesomeIconView glyphName="TRASH" glyphStyle="-fx-fill: black" />
                         </graphic>

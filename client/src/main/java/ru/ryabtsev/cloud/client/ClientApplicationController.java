@@ -18,8 +18,10 @@ import ru.ryabtsev.cloud.common.NetworkSettings;
 import ru.ryabtsev.cloud.common.message.FileMessage;
 import ru.ryabtsev.cloud.common.message.AbstractMessage;
 import ru.ryabtsev.cloud.common.message.Message;
+import ru.ryabtsev.cloud.common.message.client.file.DeleteRequest;
 import ru.ryabtsev.cloud.common.message.client.file.DownloadRequest;
 import ru.ryabtsev.cloud.common.message.client.file.FileStructureRequest;
+import ru.ryabtsev.cloud.common.message.server.file.DeleteResponse;
 import ru.ryabtsev.cloud.common.message.server.file.FileStructureResponse;
 import ru.ryabtsev.cloud.common.message.server.HandshakeResponse;
 import ru.ryabtsev.cloud.common.message.server.file.UploadResponse;
@@ -134,6 +136,9 @@ public class ClientApplicationController implements Initializable {
                     else if(messageType.equals(UploadResponse.class)) {
                         processUploadResponse((UploadResponse)message);
                     }
+                    else if(messageType.equals(DeleteResponse.class)) {
+                        processDeleteResponse((DeleteResponse) message);
+                    }
                     else {
                         LOGGER.warning("Unexpected message received with type " + message.type());
                     }
@@ -150,6 +155,7 @@ public class ClientApplicationController implements Initializable {
 
         networkService.sendMessage(new FileStructureRequest(userName));
     }
+
 
     private void logMessage(final Message message) {
         LOGGER.info(message.getClass().getSimpleName() + " received");
@@ -238,26 +244,39 @@ public class ClientApplicationController implements Initializable {
     }
 
 
+    public void clientDelete() {
+        delete(ApplicationSide.CLIENT);
+        refreshClientFilesList();
+    }
+
+    public void serverDelete() {
+        delete(ApplicationSide.SERVER);
+    }
 
     @SneakyThrows
-    public void delete() {
-        final ObservableList<FileDescription> selectedFilesDescription = getSelectedFiles(ApplicationSide.CLIENT);
+    public void delete(ApplicationSide side) {
+        final ObservableList<FileDescription> selectedFilesDescription = getSelectedFiles(side);
         for( FileDescription description : selectedFilesDescription ) {
-            final String fileName = formDirectoryDependentFileName(description.getFullName());
-            Files.delete(Paths.get(fileName));
+            if(ApplicationSide.CLIENT == side) {
+                final String fileName = formDirectoryDependentFileName(description.getFullName());
+                Files.delete(Paths.get(fileName));
+            }
+            else {
+                networkService.sendMessage(new DeleteRequest(userName, description.getFullName()));
+            }
         }
-        refreshClientFilesList();
     }
 
     public void download() {
         copy(ApplicationSide.SERVER, ApplicationSide.CLIENT);
     }
 
-//    @SneakyThrows
-//    public void downloadAndCut() {
-//        download();
-//        delete();
-//    }
+    @FXML
+    @SneakyThrows
+    private void cutAndDownload() {
+        download();
+        serverDelete();
+    }
 
     public void upload() {
         copy(ApplicationSide.CLIENT, ApplicationSide.SERVER);
@@ -266,7 +285,7 @@ public class ClientApplicationController implements Initializable {
     @SneakyThrows
     public void cutAndUpload() {
         upload();
-        delete();
+        clientDelete();
     }
 
     private void copy(ApplicationSide from, ApplicationSide to) {
@@ -325,6 +344,16 @@ public class ClientApplicationController implements Initializable {
     private void sendDownloadRequest(@NotNull final FileDescription fileDescription) {
         String fileName = fileDescription.getName() + "." + fileDescription.getExtension();
         networkService.sendMessage(new DownloadRequest(userName, fileName, 0));
+    }
+
+
+    private void processDeleteResponse(DeleteResponse response) {
+        if(response.isSuccessful()) {
+            refreshServerFilesList();
+        }
+        else {
+            LOGGER.warning("File deletion problem.");
+        }
     }
 
     @FXML

@@ -40,6 +40,4 @@ public class UploadResponse extends AbstractMessage implements FileResponse {
     public boolean isSuccessful() {
         return true;
     }
-
-
 }
