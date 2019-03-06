@@ -4,6 +4,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.ReferenceCountUtil;
 import ru.ryabtsev.cloud.common.FileDescription;
+import ru.ryabtsev.cloud.common.FileOperations;
 import ru.ryabtsev.cloud.common.NetworkSettings;
 import ru.ryabtsev.cloud.common.message.FileMessage;
 import ru.ryabtsev.cloud.common.message.AbstractMessage;
@@ -161,16 +162,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
     }
 
     private StandardOpenOption getOpenOption(final FileMessage message) {
-        StandardOpenOption result = StandardOpenOption.CREATE;
-        if(Files.exists(Paths.get(formNewFileName( message.getFileName() )))) {
-            if(message.getPartNumber() == 0) {
-                result = StandardOpenOption.WRITE;
-            }
-            else {
-                result = StandardOpenOption.APPEND;
-            }
-        }
-        return result;
+        return FileOperations.getOpenOption(formNewFileName(message.getFileName()), message.getPartNumber() == 0);
     }
 
 

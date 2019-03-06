@@ -15,6 +15,7 @@ import ru.ryabtsev.cloud.client.gui.dialog.AboutDialog;
 import ru.ryabtsev.cloud.client.service.NettyNetworkService;
 import ru.ryabtsev.cloud.client.service.NetworkService;
 import ru.ryabtsev.cloud.common.FileDescription;
+import ru.ryabtsev.cloud.common.FileOperations;
 import ru.ryabtsev.cloud.common.NetworkSettings;
 import ru.ryabtsev.cloud.common.message.FileMessage;
 import ru.ryabtsev.cloud.common.message.AbstractMessage;
@@ -199,16 +200,7 @@ public class ClientApplicationController implements Initializable {
     }
 
     private StandardOpenOption getOpenOption(final FileMessage message) {
-        StandardOpenOption result = StandardOpenOption.CREATE;
-        if(Files.exists(Paths.get(formNewFileName( message.getFileName() )))) {
-            if(message.getPartNumber() == 0) {
-                result = StandardOpenOption.WRITE;
-            }
-            else {
-                result = StandardOpenOption.APPEND;
-            }
-        }
-        return result;
+        return FileOperations.getOpenOption(formNewFileName(message.getFileName()), message.getPartNumber() == 0);
     }
 
     private void processFileStructureResponse(FileStructureResponse message) {
