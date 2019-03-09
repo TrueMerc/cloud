@@ -35,4 +35,11 @@ public interface NetworkService {
      * @throws IOException
      */
      AbstractMessage receiveMessage() throws ClassNotFoundException, IOException;
+
+    /**
+     *
+     * @return
+     */
+    boolean isConnected();
+
 }

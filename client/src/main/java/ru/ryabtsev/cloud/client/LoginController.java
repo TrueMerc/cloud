@@ -5,9 +5,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
 import ru.ryabtsev.cloud.client.service.AuthencticationService;
 import ru.ryabtsev.cloud.client.service.NetworkAuthenticationService;
+
 
 /**
  * Implements login window controller.
@@ -23,7 +23,7 @@ public class LoginController {
     BorderPane parentWindow;
 
     private AuthencticationService authencticationService = new NetworkAuthenticationService(
-            ClientApplication.networkService()
+            ClientApplication.getNetworkService()
     );
 
     public void authenticate(ActionEvent actionEvent) {

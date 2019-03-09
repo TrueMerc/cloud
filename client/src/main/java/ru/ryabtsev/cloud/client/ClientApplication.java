@@ -50,16 +50,11 @@ public class ClientApplication extends Application {
 
     private static final ClientApplication INSTANCE = new ClientApplication();
 
-//    protected ClientApplication() {
-//        super();
-//    }
 
     @Override
     public void start(Stage primaryStage) {
         ClientApplication.primaryStage = primaryStage;
         initPrimaryStage(primaryStage);
-
-        networkService.start(DEFAULT_SERVER_HOST, DEFAULT_SERVER_PORT);
         primaryStage.show();
     }
 
@@ -92,7 +87,7 @@ public class ClientApplication extends Application {
      * Returns application network service.
      * @return application network service.
      */
-    public static NetworkService networkService() {
+    public static NetworkService getNetworkService() {
         return networkService;
     }
 
@@ -104,6 +99,7 @@ public class ClientApplication extends Application {
         switch (sceneId) {
             case LOGIN:
                 setScene(LOGIN_FXML_FILE_NAME);
+                networkService.start(DEFAULT_SERVER_HOST, DEFAULT_SERVER_PORT);
                 break;
             case FILE_MANAGEMENT:
                 setScene(FILE_MANAGEMENT_FXML_FILE_NAME);

@@ -19,6 +19,11 @@
                 <FontAwesomeIconView glyphName="CLOSE" glyphStyle="-fx-fill: black" />
             </graphic>
         </MenuItem>
+        <MenuItem text="_Disconnect" onAction="#disconnect" accelerator="Shortcut + D">
+            <graphic>
+                <FontAwesomeIconView glyphName="UNLINK" glyphStyle="-fx-fill: black" />
+            </graphic>
+        </MenuItem>
     </Menu>
     <Menu text="_Help">
         <graphic>

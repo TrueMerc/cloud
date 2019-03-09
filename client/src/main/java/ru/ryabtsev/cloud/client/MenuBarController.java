@@ -1,15 +1,24 @@
 package ru.ryabtsev.cloud.client;
 
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.stage.Window;
 import ru.ryabtsev.cloud.client.gui.dialog.AboutDialog;
 
-
+/**
+ * Implements menu bar controller.
+ */
 public class MenuBarController {
     @FXML
     private void exitApplication() {
         Platform.exit();
+    }
+
+    @FXML
+    private void disconnect() {
+        ClientApplication.getNetworkService().stop();
+        ClientApplication.getInstance().setActiveScene(ClientApplication.SceneId.LOGIN);
     }
 
     @FXML

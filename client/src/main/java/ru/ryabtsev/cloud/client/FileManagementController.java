@@ -51,7 +51,7 @@ public class FileManagementController implements Initializable {
     @FXML
     TableView<FileDescription> serverFilesView = new TableView<>();
 
-    private static NetworkService networkService = ClientApplication.networkService();
+    private static NetworkService networkService = ClientApplication.getNetworkService();
 
     private String userName = ClientApplication.userName;
 
@@ -113,7 +113,7 @@ public class FileManagementController implements Initializable {
         Thread thread = new Thread(()->{
             LOGGER.info("Listener thread started.");
             try {
-                while (true) {
+                while (networkService.isConnected()) {
                     AbstractMessage message = networkService.receiveMessage();
                     if(message == null) {
                         LOGGER.warning("null message received.");
