@@ -10,11 +10,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import ru.ryabtsev.cloud.client.service.AuthencticationService;
-import ru.ryabtsev.cloud.client.service.DummyAuthenticationService;
 import ru.ryabtsev.cloud.client.service.NetworkAuthenticationService;
 
 import java.io.IOException;
-
 
 /**
  * Implements login window controller.

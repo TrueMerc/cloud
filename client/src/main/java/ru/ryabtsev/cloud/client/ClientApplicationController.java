@@ -361,7 +361,7 @@ public class ClientApplicationController implements Initializable {
     @FXML
     private void aboutDialog() {
         try {
-            AboutDialog dialog = new AboutDialog(ClientApplication.MAIN_WINDOW);
+            AboutDialog dialog = new AboutDialog(ClientApplication.primaryStage);
             Window window = dialog.getDialogPane().getScene().getWindow();
             window.setOnCloseRequest(event -> window.hide());
             dialog.show();

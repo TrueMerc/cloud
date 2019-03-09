@@ -2,7 +2,6 @@ package ru.ryabtsev.cloud.client;
 
 
 
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -22,7 +21,7 @@ public class ClientApplication extends Application {
     private static final int DEFAULT_WIDTH = 640;
     private static final int DEFAULT_HEIGHT = 480;
 
-    public static Stage MAIN_WINDOW;
+    public static Stage primaryStage;
 
     public static String userName = "";
 
@@ -33,7 +32,7 @@ public class ClientApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        MAIN_WINDOW = primaryStage;
+        ClientApplication.primaryStage = primaryStage;
         final FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Login.fxml"));
         Parent root =  fxmlLoader.load();
 
