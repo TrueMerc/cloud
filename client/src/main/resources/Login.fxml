@@ -5,27 +5,33 @@
 
 <?import javafx.geometry.Insets?>
 
-<VBox fx:id="parentWindow"
-      alignment="center"
+<BorderPane fx:id="parentWindow"
       style="-fx-background-color: #0ef7d0"
       xmlns="http://javafx.com/javafx/8.0.112-ea"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="ru.ryabtsev.cloud.client.LoginController">
+    <top>
+        <fx:include source="MenuBar.fxml"/>
+    </top>
+    <center>
+        <VBox alignment="CENTER">
+            <TextField fx:id="login" maxWidth="200" promptText="Login">
+                <VBox.margin>
+                    <Insets bottom="10.0" />
+                </VBox.margin>
+            </TextField>
 
-    <TextField fx:id="login" maxWidth="200" promptText="Login">
-        <VBox.margin>
-            <Insets bottom="10.0" />
-        </VBox.margin>
-    </TextField>
+            <PasswordField fx:id="password" maxWidth="200" promptText="Password" />
 
-    <PasswordField fx:id="password" maxWidth="200" promptText="Password" />
+            <Button onAction="#authenticate" prefWidth="200" text="Authenticate" defaultButton="true">
+                <opaqueInsets>
+                    <Insets />
+                </opaqueInsets>
+                <VBox.margin>
+                    <Insets top="10.0" />
+                </VBox.margin>
+            </Button>
+        </VBox>
+    </center>
 
-    <Button onAction="#authenticate" prefWidth="200" text="Authenticate" defaultButton="true">
-        <opaqueInsets>
-            <Insets />
-        </opaqueInsets>
-        <VBox.margin>
-            <Insets top="10.0" />
-        </VBox.margin>
-    </Button>
-</VBox>
+</BorderPane>

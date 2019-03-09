@@ -110,8 +110,6 @@ public class FileManagementController implements Initializable {
     }
 
     private void initializeNetwork() {
-        //networkService.start(DEFAULT_SERVER_HOST, DEFAULT_SERVER_PORT);
-
         Thread thread = new Thread(()->{
             LOGGER.info("Listener thread started.");
             try {
@@ -353,20 +351,5 @@ public class FileManagementController implements Initializable {
         }
     }
 
-    @FXML
-    private void exitApplication() {
-        Platform.exit();
-    }
 
-    @FXML
-    private void aboutDialog() {
-        try {
-            AboutDialog dialog = new AboutDialog(ClientApplication.primaryStage);
-            Window window = dialog.getDialogPane().getScene().getWindow();
-            window.setOnCloseRequest(event -> window.hide());
-            dialog.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }

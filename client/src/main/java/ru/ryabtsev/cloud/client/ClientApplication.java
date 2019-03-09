@@ -38,16 +38,21 @@ public class ClientApplication extends Application {
     private static final int DEFAULT_WIDTH = 640;
     private static final int DEFAULT_HEIGHT = 480;
 
+    private static final String DEFAULT_SERVER_HOST = "localhost";
+    private static final int DEFAULT_SERVER_PORT = NetworkSettings.DEFAULT_PORT;
+
     public static Stage primaryStage;
 
     public static String userName = "";
 
-    private static final String DEFAULT_SERVER_HOST = "localhost";
-    private static final int DEFAULT_SERVER_PORT = NetworkSettings.DEFAULT_PORT;
 
     public static NetworkService networkService = new NettyNetworkService();
 
     private static final ClientApplication INSTANCE = new ClientApplication();
+
+//    protected ClientApplication() {
+//        super();
+//    }
 
     @Override
     public void start(Stage primaryStage) {
@@ -58,6 +63,10 @@ public class ClientApplication extends Application {
         primaryStage.show();
     }
 
+    /**
+     * Returns application instance.
+     * @return application instance.
+     */
     public static ClientApplication getInstance() {
         return INSTANCE;
     }
@@ -71,6 +80,10 @@ public class ClientApplication extends Application {
         setActiveScene(SceneId.LOGIN);
     }
 
+    /**
+     * Application entry point.
+     * @param args command line arguments.
+     */
     public static void main(String[] args) {
         launch(args);
     }

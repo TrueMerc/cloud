@@ -9,28 +9,7 @@
       fx:controller="ru.ryabtsev.cloud.client.FileManagementController"
       alignment="CENTER"
       prefHeight="480" prefWidth="640">
-    <MenuBar>
-        <Menu text="_File" >
-            <graphic>
-                <FontAwesomeIconView glyphName="FILE" glyphStyle="-fx-fill: black" />
-            </graphic>
-            <MenuItem text="E_xit" onAction="#exitApplication" accelerator="Shortcut + Q">
-                <graphic>
-                    <FontAwesomeIconView glyphName="CLOSE" glyphStyle="-fx-fill: black" />
-                </graphic>
-            </MenuItem>
-        </Menu>
-        <Menu text="_Help">
-            <graphic>
-                <FontAwesomeIconView glyphName="QUESTION_CIRCLE" glyphStyle="-fx-fill: black" />
-            </graphic>
-            <MenuItem text="_About" onAction="#aboutDialog" accelerator="F1">
-                <graphic>
-                    <FontAwesomeIconView glyphName="INFO_CIRCLE" glyphStyle="-fx-fill: black"/>
-                </graphic>
-            </MenuItem>
-        </Menu>
-    </MenuBar>
+    <fx:include source="MenuBar.fxml"/>
     <children>
         <SplitPane orientation="HORIZONTAL" VBox.vgrow="ALWAYS">
             <!--Client side controls -->

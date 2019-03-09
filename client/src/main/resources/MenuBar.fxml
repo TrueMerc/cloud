@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<MenuBar xmlns="http://javafx.com/javafx"
+         xmlns:fx="http://javafx.com/fxml"
+         fx:controller="ru.ryabtsev.cloud.client.MenuBarController">
+    <Menu text="_File" >
+        <graphic>
+            <FontAwesomeIconView glyphName="FILE" glyphStyle="-fx-fill: black" />
+        </graphic>
+        <MenuItem text="E_xit" onAction="#exitApplication" accelerator="Shortcut + Q">
+            <graphic>
+                <FontAwesomeIconView glyphName="CLOSE" glyphStyle="-fx-fill: black" />
+            </graphic>
+        </MenuItem>
+    </Menu>
+    <Menu text="_Help">
+        <graphic>
+            <FontAwesomeIconView glyphName="QUESTION_CIRCLE" glyphStyle="-fx-fill: black" />
+        </graphic>
+        <MenuItem text="_About" onAction="#aboutDialog" accelerator="F1">
+            <graphic>
+                <FontAwesomeIconView glyphName="INFO_CIRCLE" glyphStyle="-fx-fill: black"/>
+            </graphic>
+        </MenuItem>
+    </Menu>
+</MenuBar>
