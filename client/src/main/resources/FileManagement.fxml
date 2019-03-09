@@ -6,7 +6,7 @@
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 
 <VBox xmlns:fx="http://javafx.com/javafx"
-      fx:controller="ru.ryabtsev.cloud.client.ClientApplicationController"
+      fx:controller="ru.ryabtsev.cloud.client.FileManagementController"
       alignment="CENTER"
       prefHeight="480" prefWidth="640">
     <MenuBar>

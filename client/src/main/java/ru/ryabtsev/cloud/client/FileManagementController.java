@@ -39,7 +39,7 @@ import java.util.logging.Logger;
 /**
  * Implements client application controller.
  */
-public class ClientApplicationController implements Initializable {
+public class FileManagementController implements Initializable {
 
     private static final String DEFAULT_FOLDER_NAME = "./client_storage";
 
