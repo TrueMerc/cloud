@@ -1,10 +1,7 @@
 package ru.ryabtsev.cloud.client.gui.dialog;
 
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.control.TextInputDialog;
 import javafx.stage.Modality;
-import javafx.stage.Stage;
 
 /**
  * Implements dialog for file renaming operation.

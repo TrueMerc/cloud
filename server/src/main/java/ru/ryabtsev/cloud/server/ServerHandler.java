@@ -51,6 +51,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
             AbstractMessage message = (AbstractMessage) object;
             if (message == null) {
                 LOGGER.warning("null message received.");
+                return;
             }
             if  (message.type().equals(AuthenticationRequest.class)) {
                 processAuthenticationRequest(ctx, (AuthenticationRequest)message);
@@ -86,7 +87,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         cause.printStackTrace();
         ctx.close();
     }
@@ -127,9 +128,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
                 filesToDownload.add(name);
             }
             else {
-                if(filesToDownload.contains(name)) {
-                    filesToDownload.remove(name);
-                }
+                filesToDownload.remove(name);
                 if(filesToDelete.contains(name)) {
                     boolean result = delete(name);
                     filesToDelete.remove(name);

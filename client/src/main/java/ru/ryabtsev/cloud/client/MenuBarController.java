@@ -1,6 +1,5 @@
 package ru.ryabtsev.cloud.client;
 
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.stage.Window;

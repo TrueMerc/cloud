@@ -86,7 +86,7 @@ public class ClientApplication extends Application {
     }
 
     /**
-     * Sets active application scene by given identificator.
+     * Sets active application scene by given identifier.
      * @param sceneId scene identifier.
      */
     public void setActiveScene(SceneId sceneId) {
@@ -110,6 +110,7 @@ public class ClientApplication extends Application {
             root = fxmlLoader.load();
         } catch (IOException e) {
             e.printStackTrace();
+            return;
         }
         final Scene scene = new Scene(root);
         primaryStage.setScene(scene);

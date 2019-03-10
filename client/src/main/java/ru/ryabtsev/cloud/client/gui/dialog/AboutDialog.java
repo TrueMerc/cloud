@@ -1,7 +1,6 @@
 package ru.ryabtsev.cloud.client.gui.dialog;
 
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Dialog;
 import javafx.stage.Modality;
@@ -14,7 +13,7 @@ public class AboutDialog extends Dialog {
 
     /**
      * Construct new dialog which contains application description.
-     * @param parent
+     * @param parent parent window.
      */
     public AboutDialog(final Stage parent) throws Exception {
         this.initOwner(parent);

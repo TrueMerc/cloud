@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
@@ -10,13 +7,12 @@
 <VBox xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="ru.ryabtsev.cloud.client.gui.dialog.AboutDialogController"
-            minHeight="120.0" minWidth="180.0" centerShape="true" alignment="CENTER">
-    <HBox centerShape="true" VBox.vgrow="NEVER" alignment="CENTER">
-        <Label>
+            minHeight="120.0" minWidth="180.0" alignment="CENTER">
+    <HBox VBox.vgrow="NEVER" alignment="CENTER">
+        <Label text="Simple cloud application">
             <graphic>
                 <FontAwesomeIconView glyphName="QUESTION_CIRCLE" glyphSize="36" glyphStyle="-fx-fill: black " />
             </graphic>
-            <text>Simple cloud application</text>
         </Label>
     </HBox>
 </VBox>

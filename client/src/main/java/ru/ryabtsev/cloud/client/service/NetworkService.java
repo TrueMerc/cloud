@@ -31,14 +31,14 @@ public interface NetworkService {
     /**
      * Receives message from server.
      * @return received message.
-     * @throws ClassNotFoundException
-     * @throws IOException
+     * @throws ClassNotFoundException if class can't be restored after serialization.
+     * @throws IOException on input-output error.
      */
      AbstractMessage receiveMessage() throws ClassNotFoundException, IOException;
 
     /**
-     *
-     * @return
+     * Returns true if connection is established and false in the other case.
+     * @return true if connection is established and false in the other case.
      */
     boolean isConnected();
 

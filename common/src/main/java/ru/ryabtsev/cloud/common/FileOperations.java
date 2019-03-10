@@ -1,7 +1,6 @@
 package ru.ryabtsev.cloud.common;
 
 import org.jetbrains.annotations.NotNull;
-import ru.ryabtsev.cloud.common.message.FileMessage;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;

@@ -12,12 +12,12 @@
       prefHeight="480" prefWidth="640">
     <fx:include source="MenuBar.fxml"/>
     <children>
-        <SplitPane orientation="HORIZONTAL" VBox.vgrow="ALWAYS">
+        <SplitPane VBox.vgrow="ALWAYS">
             <!--Client side controls -->
             <VBox HBox.hgrow="ALWAYS">
                 <FilesTableView fx:id="clientFilesView" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS"/>
                 <HBox>
-                    <Button fx:id="clientCopyButton" onAction="#upload" HBox.hgrow="ALWAYS">
+                    <Button onAction="#upload" HBox.hgrow="ALWAYS">
                         <graphic>
                             <FontAwesomeIconView glyphName="CLOUD_UPLOAD" glyphStyle="-fx-fill: black" />
                         </graphic>
@@ -28,7 +28,7 @@
                             <Tooltip text="Copy selected files from client to server"/>
                         </tooltip>
                     </Button>
-                    <Button fx:id="clientCutButton" onAction="#cutAndUpload" HBox.hgrow="ALWAYS">
+                    <Button onAction="#cutAndUpload" HBox.hgrow="ALWAYS">
                         <graphic>
                             <FontAwesomeIconView glyphName="CUT" glyphStyle="-fx-fill: black" />
                         </graphic>
@@ -39,7 +39,7 @@
                             <Tooltip text="Copy selected files from client to server and remove them from client"/>
                         </tooltip>
                     </Button>
-                    <Button fx:id="clientDeleteButton" onAction="#clientDelete" HBox.hgrow="ALWAYS">
+                    <Button onAction="#clientDelete" HBox.hgrow="ALWAYS">
                         <graphic>
                             <FontAwesomeIconView glyphName="TRASH" glyphStyle="-fx-fill: black" />
                         </graphic>
@@ -50,7 +50,7 @@
                             <Tooltip text="Delete selected files from client"/>
                         </tooltip>
                     </Button>
-                    <Button fx:id="clientRenameButton" onAction="#clientRename" HBox.hgrow="ALWAYS">
+                    <Button onAction="#clientRename" HBox.hgrow="ALWAYS">
                         <graphic>
                             <FontAwesomeIconView glyphName="EDIT" glyphStyle="-fx-fill: black" />
                         </graphic>
@@ -61,7 +61,7 @@
                             <Tooltip text = "Rename selected file"/>
                         </tooltip>
                     </Button>
-                    <Button fx:id="clientRefreshButton" onAction="#refreshClientFilesList" HBox.hgrow="ALWAYS">
+                    <Button onAction="#refreshClientFilesList" HBox.hgrow="ALWAYS">
                         <graphic>
                             <FontAwesomeIconView glyphName="REFRESH" glyphStyle="-fx-fill: black" />
                         </graphic>
@@ -79,7 +79,7 @@
             <VBox HBox.hgrow="ALWAYS">
                 <FilesTableView fx:id="serverFilesView" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS"/>
                 <HBox>
-                    <Button fx:id="serverCopyButton" onAction="#download" HBox.hgrow="ALWAYS">
+                    <Button onAction="#download" HBox.hgrow="ALWAYS">
                         <graphic>
                             <FontAwesomeIconView glyphName="CLOUD_DOWNLOAD" glyphStyle="-fx-fill: black"/>
                         </graphic>
@@ -90,7 +90,7 @@
                             <Tooltip text="Copy selected files from server to client"/>
                         </tooltip>
                     </Button>
-                    <Button fx:id="serverCutButton" onAction="#cutAndDownload" HBox.hgrow="ALWAYS">
+                    <Button onAction="#cutAndDownload" HBox.hgrow="ALWAYS">
                         <graphic>
                             <FontAwesomeIconView glyphName="CUT" glyphStyle="-fx-fill: black" />
                         </graphic>
@@ -101,7 +101,7 @@
                             <Tooltip text="Copy selected files from server to client and remove them from server"/>
                         </tooltip>
                     </Button>
-                    <Button fx:id="serverDeleteButton" onAction="#serverDelete" HBox.hgrow="ALWAYS">
+                    <Button onAction="#serverDelete" HBox.hgrow="ALWAYS">
                         <graphic>
                             <FontAwesomeIconView glyphName="TRASH" glyphStyle="-fx-fill: black" />
                         </graphic>
@@ -112,7 +112,7 @@
                             <Tooltip text="Delete selected files from server"/>
                         </tooltip>
                     </Button>
-                    <Button fx:id="serverRenameButton" onAction="#serverRename" HBox.hgrow="ALWAYS">
+                    <Button onAction="#serverRename" HBox.hgrow="ALWAYS">
                         <graphic>
                             <FontAwesomeIconView glyphName="EDIT" glyphStyle="-fx-fill: black" />
                         </graphic>
@@ -123,7 +123,7 @@
                             <Tooltip text = "Refresh rename selected file"/>
                         </tooltip>
                     </Button>
-                    <Button fx:id="serverRefreshButton" onAction="#refreshServerFilesList" HBox.hgrow="ALWAYS">
+                    <Button onAction="#refreshServerFilesList" HBox.hgrow="ALWAYS">
                         <graphic>
                             <FontAwesomeIconView glyphName="REFRESH" glyphStyle="-fx-fill: black" />
                         </graphic>

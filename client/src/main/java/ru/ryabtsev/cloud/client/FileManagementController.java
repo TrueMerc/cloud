@@ -201,9 +201,7 @@ public class FileManagementController implements Initializable {
             else {
                 refreshServerFilesList();
                 final String name = response.getFileName();
-                if( filesToUpload.contains(name) ) {
-                    filesToUpload.remove(name);
-                }
+                filesToUpload.remove(name);
                 if( filesToDelete.contains(name) ) {
                     delete( formDirectoryDependentFileName(name) );
                     filesToDelete.remove(name);
@@ -287,7 +285,7 @@ public class FileManagementController implements Initializable {
 
         if(ApplicationSide.CLIENT == from) {
             filesToUpload = selectedFilesDescription.stream()
-                    .map(description -> description.getFullName())
+                    .map(FileDescription::getFullName)
                     .collect(Collectors.toList());
         }
 
@@ -318,7 +316,7 @@ public class FileManagementController implements Initializable {
         String oldName = description.getFullName();
         RenameDialog dialog = new RenameDialog(oldName);
         Optional<String> result = dialog.showAndWait();
-        if(result.isPresent() && !("".equals(result)) && !existsInCurrentFolder(result.get(), side)) {
+        if(result.isPresent() && !("".equals(result.get())) && !existsInCurrentFolder(result.get(), side)) {
             String newName = result.get();
             if(ApplicationSide.CLIENT == side) {
                 Files.move(
