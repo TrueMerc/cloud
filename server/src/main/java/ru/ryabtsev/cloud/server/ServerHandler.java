@@ -10,13 +10,11 @@ import ru.ryabtsev.cloud.common.NetworkSettings;
 import ru.ryabtsev.cloud.common.message.FileMessage;
 import ru.ryabtsev.cloud.common.message.AbstractMessage;
 import ru.ryabtsev.cloud.common.message.client.AuthenticationRequest;
-import ru.ryabtsev.cloud.common.message.client.file.DeleteRequest;
-import ru.ryabtsev.cloud.common.message.client.file.DownloadRequest;
-import ru.ryabtsev.cloud.common.message.client.file.FileStructureRequest;
-import ru.ryabtsev.cloud.common.message.client.file.UploadRequest;
+import ru.ryabtsev.cloud.common.message.client.file.*;
 import ru.ryabtsev.cloud.common.message.server.AuthenticationResponse;
 import ru.ryabtsev.cloud.common.message.server.file.DeleteResponse;
 import ru.ryabtsev.cloud.common.message.server.file.FileStructureResponse;
+import ru.ryabtsev.cloud.common.message.server.file.RenameResponse;
 import ru.ryabtsev.cloud.common.message.server.file.UploadResponse;
 import ru.ryabtsev.cloud.server.service.JdbcUserServiceBean;
 import ru.ryabtsev.cloud.server.service.UserService;
@@ -62,6 +60,9 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
             }
             else if (message.type().equals(FileStructureRequest.class)) {
                 processFileStructureRequest(ctx, (FileStructureRequest) message);
+            }
+            else if(message.type().equals(RenameRequest.class)) {
+                processRenameRequest(ctx, (RenameRequest) message);
             }
             else {
                 LOGGER.warning("Unexpected message received with type " + message.type());
@@ -135,12 +136,10 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
     }
 
     private void processUploadRequest(final ChannelHandlerContext ctx, final UploadRequest request) {
-        logMessage(request);
         ctx.writeAndFlush(new UploadResponse(request.getFileName()));
     }
 
     private void processFileMessage(ChannelHandlerContext ctx, FileMessage message) {
-        logMessage(message);
         try {
             StandardOpenOption openOption = getOpenOption(message);
             Files.write(
@@ -168,13 +167,26 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
     }
 
     private void processFileStructureRequest(final ChannelHandlerContext ctx, final FileStructureRequest request) {
-        logMessage(request);
         final String name = userService.getCurrentFolder(request.getLogin()) + request.getFolderName();
         final Path path = Paths.get(name);
         if(Files.exists(path) && Files.isDirectory(path)) {
             final FileDescription description = new FileDescription(path.toFile());
             final FileStructureResponse response = new FileStructureResponse(description);
             ctx.writeAndFlush(response);
+        }
+    }
+
+
+    private void processRenameRequest(ChannelHandlerContext ctx, final RenameRequest request) {
+        final Path oldPath = Paths.get(formFolderDependentFileName(request.getOldName()));
+        final Path newPath = Paths.get(formFolderDependentFileName(request.getNewName()));
+
+        try {
+            Files.move(oldPath, newPath);
+            ctx.writeAndFlush(new RenameResponse(request.getOldName(), request.getNewName(), true));
+        } catch (IOException e) {
+            ctx.writeAndFlush(new RenameResponse(request.getOldName(), request.getNewName(), false));
+            e.printStackTrace();
         }
     }
 }

@@ -49,6 +49,17 @@
                             <Tooltip text="Delete selected files from client"/>
                         </tooltip>
                     </Button>
+                    <Button fx:id="clientRenameButton" onAction="#clientRename" HBox.hgrow="ALWAYS">
+                        <graphic>
+                            <FontAwesomeIconView glyphName="EDIT" glyphStyle="-fx-fill: black" />
+                        </graphic>
+                        <text>
+                            <CommandText fx:constant="RENAME"/>
+                        </text>
+                        <tooltip>
+                            <Tooltip text = "Rename selected file"/>
+                        </tooltip>
+                    </Button>
                     <Button fx:id="clientRefreshButton" onAction="#refreshClientFilesList" HBox.hgrow="ALWAYS">
                         <graphic>
                             <FontAwesomeIconView glyphName="REFRESH" glyphStyle="-fx-fill: black" />
@@ -98,6 +109,17 @@
                         </text>
                         <tooltip>
                             <Tooltip text="Delete selected files from server"/>
+                        </tooltip>
+                    </Button>
+                    <Button fx:id="serverRenameButton" onAction="#serverRename" HBox.hgrow="ALWAYS">
+                        <graphic>
+                            <FontAwesomeIconView glyphName="EDIT" glyphStyle="-fx-fill: black" />
+                        </graphic>
+                        <text>
+                            <CommandText fx:constant="RENAME"/>
+                        </text>
+                        <tooltip>
+                            <Tooltip text = "Refresh rename selected file"/>
                         </tooltip>
                     </Button>
                     <Button fx:id="serverRefreshButton" onAction="#refreshServerFilesList" HBox.hgrow="ALWAYS">

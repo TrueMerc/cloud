@@ -9,7 +9,9 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
+import ru.ryabtsev.cloud.client.gui.dialog.BadRenameArgumentsAlert;
 import ru.ryabtsev.cloud.client.gui.dialog.NoSelectedFilesAlert;
+import ru.ryabtsev.cloud.client.gui.dialog.RenameDialog;
 import ru.ryabtsev.cloud.client.service.NetworkService;
 import ru.ryabtsev.cloud.common.FileDescription;
 import ru.ryabtsev.cloud.common.FileOperations;
@@ -20,8 +22,10 @@ import ru.ryabtsev.cloud.common.message.Message;
 import ru.ryabtsev.cloud.common.message.client.file.DeleteRequest;
 import ru.ryabtsev.cloud.common.message.client.file.DownloadRequest;
 import ru.ryabtsev.cloud.common.message.client.file.FileStructureRequest;
+import ru.ryabtsev.cloud.common.message.client.file.RenameRequest;
 import ru.ryabtsev.cloud.common.message.server.file.DeleteResponse;
 import ru.ryabtsev.cloud.common.message.server.file.FileStructureResponse;
+import ru.ryabtsev.cloud.common.message.server.file.RenameResponse;
 import ru.ryabtsev.cloud.common.message.server.file.UploadResponse;
 
 import java.io.File;
@@ -30,6 +34,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
@@ -90,6 +95,9 @@ public class FileManagementController implements Initializable {
                     }
                     else if(messageType.equals(DeleteResponse.class)) {
                         processDeleteResponse((DeleteResponse) message);
+                    }
+                    else if(messageType.equals(RenameResponse.class)) {
+                        processRenameResponse((RenameResponse)message);
                     }
                     else {
                         LOGGER.warning("Unexpected message received with type " + message.type());
@@ -218,6 +226,12 @@ public class FileManagementController implements Initializable {
         }
     }
 
+    private void processRenameResponse(final RenameResponse response) {
+        if(response.isSuccessful()) {
+            refreshServerFilesList();
+        }
+    }
+
     private static void refreshFilesList(
             @NotNull final TableView<FileDescription> view,
             @NotNull final FileDescription description
@@ -225,7 +239,6 @@ public class FileManagementController implements Initializable {
     {
         view.getItems().setAll(description.getChildDescriptionList());
     }
-
 
     public void clientDelete() {
         delete(ApplicationSide.CLIENT);
@@ -280,6 +293,52 @@ public class FileManagementController implements Initializable {
         for( FileDescription description : selectedFilesDescription ) {
             onCopySendMethod.accept(description);
         }
+    }
+
+    public void clientRename() {
+        rename(ApplicationSide.CLIENT);
+    }
+
+    public void serverRename() {
+        rename(ApplicationSide.SERVER);
+    }
+
+    @SneakyThrows
+    private void rename(ApplicationSide side) {
+        ObservableList<FileDescription> selectedFiles = getSelectedFiles(side);
+        if(selectedFiles.size() != 1) {
+            Alert alert = new BadRenameArgumentsAlert();
+            alert.showAndWait();
+            return;
+        }
+
+        FileDescription description = selectedFiles.get(0);
+        String oldName = description.getFullName();
+        RenameDialog dialog = new RenameDialog(oldName);
+        Optional<String> result = dialog.showAndWait();
+        if(result.isPresent() && !("".equals(result)) && !existsInCurrentFolder(result.get(), side)) {
+            String newName = result.get();
+            if(ApplicationSide.CLIENT == side) {
+                Files.move(
+                        Paths.get(formDirectoryDependentFileName(oldName)), Paths.get(formDirectoryDependentFileName(newName))
+                );
+                refreshClientFilesList();
+            }
+            else {
+                networkService.sendMessage(new RenameRequest(oldName, newName));
+            }
+        }
+    }
+
+    boolean existsInCurrentFolder(final String fileName, ApplicationSide side) {
+        ObservableList<FileDescription> descriptions = getView(side).getItems();
+        for(FileDescription description : descriptions) {
+            if( fileName.equals(description.getFullName())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private ObservableList<FileDescription> getSelectedFiles(final ApplicationSide side) throws RuntimeException {
