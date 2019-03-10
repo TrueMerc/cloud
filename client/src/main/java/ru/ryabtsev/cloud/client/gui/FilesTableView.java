@@ -17,15 +17,18 @@ public class FilesTableView extends TableView<FileDescription> {
     public FilesTableView() {
         super();
         TableColumn<FileDescription, String> tcName = new TableColumn<>("Name");
+        tcName.setMinWidth(200.);
         tcName.setCellValueFactory(new PropertyValueFactory<>("name"));
 
         TableColumn<FileDescription, String> tcExtension = new TableColumn<>("Extension");
         tcExtension.setCellValueFactory(new PropertyValueFactory<>("extension"));
 
         TableColumn<FileDescription, String> tcSize = new TableColumn<>("Size");
+        tcSize.setMinWidth(100.);
         tcSize.setCellValueFactory(new PropertyValueFactory<>("size"));
 
         TableColumn<FileDescription, String> tcDate = new TableColumn<>("Date");
+        tcDate.setMinWidth(250.);
         tcDate.setCellValueFactory(new PropertyValueFactory<>("date"));
 
         TableColumn<FileDescription, String> tcAttributes = new TableColumn<>("Attributes");

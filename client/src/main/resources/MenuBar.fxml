@@ -10,14 +10,15 @@
         <graphic>
             <FontAwesomeIconView glyphName="FILE" glyphStyle="-fx-fill: black" />
         </graphic>
-        <MenuItem text="E_xit" onAction="#exitApplication" accelerator="Shortcut + Q">
-            <graphic>
-                <FontAwesomeIconView glyphName="CLOSE" glyphStyle="-fx-fill: black" />
-            </graphic>
-        </MenuItem>
         <MenuItem text="_Disconnect" onAction="#disconnect" accelerator="Shortcut + D">
             <graphic>
                 <FontAwesomeIconView glyphName="UNLINK" glyphStyle="-fx-fill: black" />
+            </graphic>
+        </MenuItem>
+        <SeparatorMenuItem/>
+        <MenuItem text="E_xit" onAction="#exitApplication" accelerator="Shortcut + Q">
+            <graphic>
+                <FontAwesomeIconView glyphName="CLOSE" glyphStyle="-fx-fill: black" />
             </graphic>
         </MenuItem>
     </Menu>
