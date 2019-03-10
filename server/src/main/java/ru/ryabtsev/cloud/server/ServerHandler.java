@@ -13,12 +13,10 @@ import ru.ryabtsev.cloud.common.message.client.AuthenticationRequest;
 import ru.ryabtsev.cloud.common.message.client.file.DeleteRequest;
 import ru.ryabtsev.cloud.common.message.client.file.DownloadRequest;
 import ru.ryabtsev.cloud.common.message.client.file.FileStructureRequest;
-import ru.ryabtsev.cloud.common.message.client.HandshakeRequest;
 import ru.ryabtsev.cloud.common.message.client.file.UploadRequest;
 import ru.ryabtsev.cloud.common.message.server.AuthenticationResponse;
 import ru.ryabtsev.cloud.common.message.server.file.DeleteResponse;
 import ru.ryabtsev.cloud.common.message.server.file.FileStructureResponse;
-import ru.ryabtsev.cloud.common.message.server.HandshakeResponse;
 import ru.ryabtsev.cloud.common.message.server.file.UploadResponse;
 import ru.ryabtsev.cloud.server.service.JdbcUserServiceBean;
 import ru.ryabtsev.cloud.server.service.UserService;
@@ -50,9 +48,6 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
             if  (message.type().equals(AuthenticationRequest.class)) {
                 processAuthenticationRequest(ctx, (AuthenticationRequest)message);
             }
-            if (message.type().equals(HandshakeRequest.class)) {
-                processHandshakeRequest(ctx, (HandshakeRequest) message);
-            }
             else if (message.type().equals(DownloadRequest.class)) {
                 processDownloadRequest(ctx, (DownloadRequest) message);
             }
@@ -67,6 +62,9 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
             }
             else if (message.type().equals(FileStructureRequest.class)) {
                 processFileStructureRequest(ctx, (FileStructureRequest) message);
+            }
+            else {
+                LOGGER.warning("Unexpected message received with type " + message.type());
             }
         }
         catch(ClassCastException e) {
@@ -92,12 +90,6 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
             userCurrentFolder = userService.getCurrentFolder(userLogin);
         }
         ctx.writeAndFlush(new AuthenticationResponse(true));
-    }
-
-    private void processHandshakeRequest(ChannelHandlerContext ctx, HandshakeRequest request) {
-        logMessage(request);
-        HandshakeResponse response = new HandshakeResponse(true);
-        ctx.writeAndFlush(response);
     }
 
     private void logMessage(AbstractMessage request) {

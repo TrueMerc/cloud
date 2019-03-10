@@ -26,13 +26,11 @@
                         <tooltip>
                             <Tooltip text="Copy selected files from client to server"/>
                         </tooltip>
-
                     </Button>
                     <Button fx:id="clientCutButton" onAction="#cutAndUpload" HBox.hgrow="ALWAYS">
                         <graphic>
                             <FontAwesomeIconView glyphName="CUT" glyphStyle="-fx-fill: black" />
                         </graphic>
-
                         <text>
                             <CommandText fx:constant="CUT"/>
                         </text>

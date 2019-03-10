@@ -7,10 +7,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Window;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
-import ru.ryabtsev.cloud.client.gui.dialog.AboutDialog;
 import ru.ryabtsev.cloud.client.gui.dialog.NoSelectedFilesAlert;
 import ru.ryabtsev.cloud.client.service.NetworkService;
 import ru.ryabtsev.cloud.common.FileDescription;
@@ -24,7 +22,6 @@ import ru.ryabtsev.cloud.common.message.client.file.DownloadRequest;
 import ru.ryabtsev.cloud.common.message.client.file.FileStructureRequest;
 import ru.ryabtsev.cloud.common.message.server.file.DeleteResponse;
 import ru.ryabtsev.cloud.common.message.server.file.FileStructureResponse;
-import ru.ryabtsev.cloud.common.message.server.HandshakeResponse;
 import ru.ryabtsev.cloud.common.message.server.file.UploadResponse;
 
 import java.io.File;
@@ -64,10 +61,51 @@ public class FileManagementController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        initializeNetwork();
         initializeClientList();
         initializeServerList();
-        initializeNetwork();
     }
+
+    private void initializeNetwork() {
+        Thread thread = new Thread(()->{
+            LOGGER.info("Listener thread started.");
+            try {
+                while (networkService.isConnected()) {
+                    AbstractMessage message = networkService.receiveMessage();
+                    if(message == null) {
+                        LOGGER.warning("null message received.");
+                        continue;
+                    }
+                    logMessage(message);
+
+                    Class<?> messageType = message.type();
+                    if(messageType.equals(FileMessage.class)) {
+                        processFileMessage((FileMessage)message);
+                    }
+                    else if(messageType.equals(FileStructureResponse.class)) {
+                        processFileStructureResponse((FileStructureResponse)message);
+                    }
+                    else if(messageType.equals(UploadResponse.class)) {
+                        processUploadResponse((UploadResponse)message);
+                    }
+                    else if(messageType.equals(DeleteResponse.class)) {
+                        processDeleteResponse((DeleteResponse) message);
+                    }
+                    else {
+                        LOGGER.warning("Unexpected message received with type " + message.type());
+                    }
+                }
+            } catch (ClassNotFoundException | IOException e) {
+                e.printStackTrace();
+            } finally {
+                networkService.stop();
+                LOGGER.info("Listener thread finished.");
+            }
+        });
+        thread.setDaemon(true);
+        thread.start();
+    }
+
 
     private void initializeClientList() {
         currentFolderName = DEFAULT_FOLDER_NAME;
@@ -108,65 +146,7 @@ public class FileManagementController implements Initializable {
 
     private void initializeServerList() {
         initializeTableView( serverFilesView );
-    }
-
-    private void initializeNetwork() {
-        Thread thread = new Thread(()->{
-            LOGGER.info("Listener thread started.");
-            try {
-                while (networkService.isConnected()) {
-                    AbstractMessage message = networkService.receiveMessage();
-                    if(message == null) {
-                        LOGGER.warning("null message received.");
-                        continue;
-                    }
-                    logMessage(message);
-
-                    Class<?> messageType = message.type();
-                    if (messageType.equals(HandshakeResponse.class)) {
-                        processHandshakeResponse((HandshakeResponse)message);
-                    }
-                    else if(messageType.equals(FileMessage.class)) {
-                        processFileMessage((FileMessage)message);
-                    }
-                    else if(messageType.equals(FileStructureResponse.class)) {
-                        processFileStructureResponse((FileStructureResponse)message);
-                    }
-                    else if(messageType.equals(UploadResponse.class)) {
-                        processUploadResponse((UploadResponse)message);
-                    }
-                    else if(messageType.equals(DeleteResponse.class)) {
-                        processDeleteResponse((DeleteResponse) message);
-                    }
-                    else {
-                        LOGGER.warning("Unexpected message received with type " + message.type());
-                    }
-                }
-            } catch (ClassNotFoundException | IOException e) {
-                e.printStackTrace();
-            } finally {
-                networkService.stop();
-                LOGGER.info("Listener thread finished.");
-            }
-        });
-        thread.setDaemon(true);
-        thread.start();
-
-        networkService.sendMessage(new FileStructureRequest(userName));
-    }
-
-
-    private void logMessage(final Message message) {
-        LOGGER.info(message.getClass().getSimpleName() + " received");
-    }
-
-    private void processHandshakeResponse(HandshakeResponse message) {
-        if(message.isSuccessful()) {
-            refreshServerFilesList();
-        }
-        else {
-            LOGGER.warning("Handshake failed!!!");
-        }
+        refreshServerFilesList();
     }
 
     @FXML
@@ -174,6 +154,10 @@ public class FileManagementController implements Initializable {
         AbstractMessage fileStructureRequest = new FileStructureRequest(userName);
         networkService.sendMessage(fileStructureRequest);
         LOGGER.info(FileStructureRequest.class.getSimpleName() + " sent");
+    }
+
+    private void logMessage(final Message message) {
+        LOGGER.info(message.getClass().getSimpleName() + " received");
     }
 
     private void processFileMessage(final FileMessage message) {
@@ -352,6 +336,4 @@ public class FileManagementController implements Initializable {
             LOGGER.warning("File deletion problem.");
         }
     }
-
-
 }
