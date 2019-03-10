@@ -11,7 +11,7 @@ import ru.ryabtsev.cloud.common.message.AbstractMessage;
 public class UploadResponse extends AbstractMessage implements FileResponse {
     private String fileName;
     private int nextNumber;
-    private boolean isComplete;
+    private boolean isCompleted;
 
     /**
      * Constructs upload request with given file name.
@@ -22,7 +22,7 @@ public class UploadResponse extends AbstractMessage implements FileResponse {
     public UploadResponse(@NotNull final String fileName, final int partNumber) {
         this.fileName = fileName;
         this.nextNumber = partNumber + 1;
-        this.isComplete = false;
+        this.isCompleted = false;
     }
 
     /**
@@ -33,7 +33,7 @@ public class UploadResponse extends AbstractMessage implements FileResponse {
     public UploadResponse(@NotNull final String fileName) {
         this.fileName = fileName;
         this.nextNumber = -1;
-        this.isComplete = true;
+        this.isCompleted = true;
     }
 
     @Override

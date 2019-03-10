@@ -4,6 +4,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.ReferenceCountUtil;
 import lombok.SneakyThrows;
+import org.jetbrains.annotations.NotNull;
 import ru.ryabtsev.cloud.common.FileDescription;
 import ru.ryabtsev.cloud.common.FileOperations;
 import ru.ryabtsev.cloud.common.NetworkSettings;
@@ -24,6 +25,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 public class ServerHandler extends ChannelInboundHandlerAdapter {
@@ -35,6 +40,10 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
     private static UserService userService = new JdbcUserServiceBean(SERVER_STORAGE_ROOT);
 
     private String userCurrentFolder = "";
+
+    private List<String> filesToDownload = new LinkedList<>();
+
+    private Set<String> filesToDelete = new LinkedHashSet<>();
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object object) throws Exception {
@@ -99,9 +108,8 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 
     private void processDownloadRequest(final ChannelHandlerContext ctx, final DownloadRequest request) throws IOException {
         logMessage(request);
-        //final String fileName = userService.getCurrentFolder(request.getLogin()) + '/' + request.getFileName();
-        final String fileName = formFolderDependentFileName(request.getFileName());
-        final Path path = Paths.get(fileName);
+        final String name = request.getFileName();
+        final Path path = Paths.get(formFolderDependentFileName(name));
         if (Files.exists(path)) {
             FileMessage fm = new FileMessage(
                     path,
@@ -110,29 +118,50 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
             );
             ctx.writeAndFlush(fm);
             LOGGER.info(
-                "File message sent: " +
-                "\nname = " + fm.getFileName() +
-                "\npartNumber = " + fm.getPartNumber() +
-                "\npayloadLength = " + fm.getData().length
+                    "File message sent: " +
+                            "\nname = " + fm.getFileName() +
+                            "\npartNumber = " + fm.getPartNumber() +
+                            "\npayloadLength = " + fm.getData().length
             );
+            if(fm.hasNext()) {
+                filesToDownload.add(name);
+            }
+            else {
+                if(filesToDownload.contains(name)) {
+                    filesToDownload.remove(name);
+                }
+                if(filesToDelete.contains(name)) {
+                    boolean result = delete(name);
+                    filesToDelete.remove(name);
+                    ctx.writeAndFlush(new DeleteResponse(result));
+                }
+            }
         }
         else {
-            LOGGER.warning("File with given name " + fileName + " doesn't exists.");
+            LOGGER.warning("File with given name " + name + " doesn't exists.");
+        }
+    }
+
+    private void processDeleteRequest(ChannelHandlerContext ctx, DeleteRequest request) {
+        final String fileName = request.getFileName();
+        if( filesToDownload.contains(fileName)) {
+            filesToDelete.add(fileName);
+        }
+        else {
+            boolean result = delete(fileName);
+            ctx.writeAndFlush(new DeleteResponse(result));
         }
     }
 
     @SneakyThrows
-    private void processDeleteRequest(ChannelHandlerContext ctx, DeleteRequest request) {
-        final String fileName = formFolderDependentFileName(request.getFileName());
-        final Path path = Paths.get(fileName);
+    private boolean delete(@NotNull final String name) {
+        final Path path = Paths.get(formFolderDependentFileName(name));
         if(Files.exists(path)) {
             Files.delete(path);
-            ctx.writeAndFlush(new DeleteResponse(true));
+            return true;
         }
-        else {
-            ctx.writeAndFlush(new DeleteResponse(false));
-            LOGGER.warning("File with given name " + fileName + " doesn't exists.");
-        }
+        LOGGER.warning("File with given name " + name + " doesn't exists.");
+        return false;
     }
 
     private void processUploadRequest(final ChannelHandlerContext ctx, final UploadRequest request) {

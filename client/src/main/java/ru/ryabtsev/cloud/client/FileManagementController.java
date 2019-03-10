@@ -6,7 +6,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import ru.ryabtsev.cloud.client.gui.FilesTableView;
@@ -35,10 +34,10 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * Implements client application controller.
@@ -60,6 +59,10 @@ public class FileManagementController implements Initializable {
     private String userName = ClientApplication.userName;
 
     private String currentFolderName = DEFAULT_FOLDER_NAME;
+
+    private List<String> filesToUpload = new LinkedList<>();
+
+    private Set<String> filesToDelete = new LinkedHashSet<>();
 
     private enum ApplicationSide {
         CLIENT, SERVER
@@ -182,7 +185,7 @@ public class FileManagementController implements Initializable {
 
     private void processUploadResponse(final UploadResponse response) {
         if( response.isSuccessful() ) {
-            if (!response.isComplete()) {
+            if (!response.isCompleted()) {
                 try {
                     networkService.sendMessage(
                             new FileMessage(
@@ -197,6 +200,14 @@ public class FileManagementController implements Initializable {
             }
             else {
                 refreshServerFilesList();
+                final String name = response.getFileName();
+                if( filesToUpload.contains(name) ) {
+                    filesToUpload.remove(name);
+                }
+                if( filesToDelete.contains(name) ) {
+                    delete( formDirectoryDependentFileName(name) );
+                    filesToDelete.remove(name);
+                }
             }
         }
     }
@@ -224,18 +235,28 @@ public class FileManagementController implements Initializable {
         delete(ApplicationSide.SERVER);
     }
 
-    @SneakyThrows
     public void delete(ApplicationSide side) {
         final ObservableList<FileDescription> selectedFilesDescription = getSelectedFiles(side);
         for( FileDescription description : selectedFilesDescription ) {
             if(ApplicationSide.CLIENT == side) {
-                final String fileName = formDirectoryDependentFileName(description.getFullName());
-                Files.delete(Paths.get(fileName));
+                final String name = description.getFullName();
+                if( filesToUpload.contains(name) ) {
+                    filesToDelete.add(name);
+                }
+                else {
+                    delete( formDirectoryDependentFileName(name) );
+                }
             }
             else {
                 networkService.sendMessage(new DeleteRequest(userName, description.getFullName()));
             }
         }
+    }
+
+    @SneakyThrows
+    private void delete(@NotNull final String fileName) {
+        Files.delete(Paths.get(fileName));
+        refreshClientFilesList();
     }
 
     public void download() {
@@ -262,6 +283,12 @@ public class FileManagementController implements Initializable {
             Alert alert = new NoSelectedFilesAlert();
             alert.showAndWait();
             return;
+        }
+
+        if(ApplicationSide.CLIENT == from) {
+            filesToUpload = selectedFilesDescription.stream()
+                    .map(description -> description.getFullName())
+                    .collect(Collectors.toList());
         }
 
         Consumer<FileDescription> onCopySendMethod = getOnCopySendMethod(from);
