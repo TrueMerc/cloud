@@ -11,6 +11,7 @@ import javafx.stage.Window;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import ru.ryabtsev.cloud.client.gui.dialog.AboutDialog;
+import ru.ryabtsev.cloud.client.gui.dialog.NoSelectedFilesAlert;
 import ru.ryabtsev.cloud.client.service.NetworkService;
 import ru.ryabtsev.cloud.common.FileDescription;
 import ru.ryabtsev.cloud.common.FileOperations;
@@ -286,7 +287,8 @@ public class FileManagementController implements Initializable {
     private void copy(ApplicationSide from, ApplicationSide to) {
         final ObservableList<FileDescription> selectedFilesDescription = getSelectedFiles(from);
         if( selectedFilesDescription == null || selectedFilesDescription.isEmpty() ) {
-            LOGGER.warning( "There aren't files to copy");
+            Alert alert = new NoSelectedFilesAlert();
+            alert.showAndWait();
             return;
         }
 

@@ -77,7 +77,6 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
-
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         cause.printStackTrace();
@@ -145,7 +144,6 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 
     private void processUploadRequest(final ChannelHandlerContext ctx, final UploadRequest request) {
         logMessage(request);
-        final String fileName = userService.getCurrentFolder(request.getLogin()) + '/' + request.getFileName();
         ctx.writeAndFlush(new UploadResponse(request.getFileName()));
     }
 
@@ -177,7 +175,6 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
         return FileOperations.getOpenOption(formFolderDependentFileName(message.getFileName()), message.getPartNumber() == 0);
     }
 
-
     private void processFileStructureRequest(final ChannelHandlerContext ctx, final FileStructureRequest request) {
         logMessage(request);
         final String name = userService.getCurrentFolder(request.getLogin()) + request.getFolderName();
@@ -188,5 +185,4 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
             ctx.writeAndFlush(response);
         }
     }
-
 }
