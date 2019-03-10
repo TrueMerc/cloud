@@ -5,7 +5,6 @@
 
 <?import javafx.geometry.Insets?>
 
-<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.text.Text?>
@@ -19,17 +18,19 @@
         <fx:include source="MenuBar.fxml"/>
     </top>
     <center>
-
         <VBox alignment="CENTER">
             <ImageView fitHeight="128" fitWidth="128">
                 <Image url="cloud_up_icon.png"/>
             </ImageView>
+
             <Text text="Simple Cloud 1.0" textAlignment="CENTER" >
                 <font>
                     <Font size="24"/>
                 </font>
             </Text>
+
             <VBox alignment="CENTER" VBox.vgrow="NEVER" prefHeight="30"/>
+
             <TextField fx:id="login" maxWidth="200" promptText="Login">
                 <VBox.margin>
                     <Insets bottom="10.0" />
@@ -48,5 +49,4 @@
             </Button>
         </VBox>
     </center>
-
 </BorderPane>

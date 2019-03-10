@@ -5,6 +5,7 @@
 <?import ru.ryabtsev.cloud.client.gui.CommandText?>
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 
+<?import ru.ryabtsev.cloud.client.gui.FilesTableView?>
 <VBox xmlns:fx="http://javafx.com/javafx"
       fx:controller="ru.ryabtsev.cloud.client.FileManagementController"
       alignment="CENTER"
@@ -14,7 +15,7 @@
         <SplitPane orientation="HORIZONTAL" VBox.vgrow="ALWAYS">
             <!--Client side controls -->
             <VBox HBox.hgrow="ALWAYS">
-                <TableView fx:id="clientFilesView" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS"/>
+                <FilesTableView fx:id="clientFilesView" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS"/>
                 <HBox>
                     <Button fx:id="clientCopyButton" onAction="#upload" HBox.hgrow="ALWAYS">
                         <graphic>
@@ -76,7 +77,7 @@
 
             <!--Server side controls -->
             <VBox HBox.hgrow="ALWAYS">
-                <TableView fx:id="serverFilesView" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS"/>
+                <FilesTableView fx:id="serverFilesView" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS"/>
                 <HBox>
                     <Button fx:id="serverCopyButton" onAction="#download" HBox.hgrow="ALWAYS">
                         <graphic>

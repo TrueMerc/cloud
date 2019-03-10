@@ -9,6 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
+import ru.ryabtsev.cloud.client.gui.FilesTableView;
 import ru.ryabtsev.cloud.client.gui.dialog.BadRenameArgumentsAlert;
 import ru.ryabtsev.cloud.client.gui.dialog.NoSelectedFilesAlert;
 import ru.ryabtsev.cloud.client.gui.dialog.RenameDialog;
@@ -49,16 +50,16 @@ public class FileManagementController implements Initializable {
     private static final Logger LOGGER = Logger.getLogger(ClientApplication.class.getSimpleName());
 
     @FXML
-    TableView<FileDescription> clientFilesView = new TableView<>();
+    FilesTableView clientFilesView = new FilesTableView();
 
     @FXML
-    TableView<FileDescription> serverFilesView = new TableView<>();
+    FilesTableView serverFilesView = new FilesTableView();
 
     private static NetworkService networkService = ClientApplication.getNetworkService();
 
     private String userName = ClientApplication.userName;
 
-    private String currentFolderName;
+    private String currentFolderName = DEFAULT_FOLDER_NAME;
 
     private enum ApplicationSide {
         CLIENT, SERVER
@@ -114,33 +115,8 @@ public class FileManagementController implements Initializable {
         thread.start();
     }
 
-
     private void initializeClientList() {
-        currentFolderName = DEFAULT_FOLDER_NAME;
-
-        initializeTableView( clientFilesView );
         refreshClientFilesList();
-    }
-
-    private static void initializeTableView(TableView<FileDescription> tableView) {
-        TableColumn<FileDescription, String> tcName = new TableColumn<>("Name");
-        tcName.setCellValueFactory(new PropertyValueFactory<>("name"));
-
-        TableColumn<FileDescription, String> tcExtension = new TableColumn<>("Extension");
-        tcExtension.setCellValueFactory(new PropertyValueFactory<>("extension"));
-
-        TableColumn<FileDescription, String> tcSize = new TableColumn<>("Size");
-        tcSize.setCellValueFactory(new PropertyValueFactory<>("size"));
-
-        TableColumn<FileDescription, String> tcDate = new TableColumn<>("Date");
-        tcDate.setCellValueFactory(new PropertyValueFactory<>("date"));
-
-        TableColumn<FileDescription, String> tcAttributes = new TableColumn<>("Attributes");
-        tcAttributes.setCellValueFactory(new PropertyValueFactory<>("attributes"));
-
-        tableView.getColumns().addAll( tcName, tcExtension, tcSize, tcDate, tcAttributes );
-
-        tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 
     @FXML
@@ -153,7 +129,6 @@ public class FileManagementController implements Initializable {
     }
 
     private void initializeServerList() {
-        initializeTableView( serverFilesView );
         refreshServerFilesList();
     }
 
