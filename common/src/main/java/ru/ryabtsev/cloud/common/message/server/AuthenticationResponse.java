@@ -1,23 +1,22 @@
 package ru.ryabtsev.cloud.common.message.server;
 
-import lombok.Getter;
 import ru.ryabtsev.cloud.common.message.AbstractMessage;
 
 /**
  * Implements
  */
 public class AuthenticationResponse extends AbstractMessage implements Response {
-    private boolean isSucessful;
+    private boolean isSuccessful;
 
     /**
      * Constructs new authentication response.
      */
-    public AuthenticationResponse(boolean isSucessful) {
-        this.isSucessful = isSucessful;
+    public AuthenticationResponse(boolean isSuccessful) {
+        this.isSuccessful = isSuccessful;
     }
 
     @Override
     public boolean isSuccessful() {
-        return isSucessful;
+        return isSuccessful;
     }
 }

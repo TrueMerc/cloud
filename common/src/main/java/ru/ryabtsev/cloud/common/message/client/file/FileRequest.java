@@ -1,6 +1,5 @@
 package ru.ryabtsev.cloud.common.message.client.file;
 
-import ru.ryabtsev.cloud.common.message.Message;
 import ru.ryabtsev.cloud.common.message.client.Request;
 
 /**

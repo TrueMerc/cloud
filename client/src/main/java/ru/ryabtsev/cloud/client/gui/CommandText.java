@@ -12,4 +12,6 @@ public class CommandText {
     public static final String DELETE = "_Delete";
 
     public static final String REFRESH = "_Refresh";
+
+    public static final String RENAME = "Re_name";
 }

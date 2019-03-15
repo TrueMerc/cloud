@@ -2,23 +2,21 @@ package ru.ryabtsev.cloud.client.service;
 
 import org.jetbrains.annotations.NotNull;
 import ru.ryabtsev.cloud.common.message.AbstractMessage;
-import ru.ryabtsev.cloud.common.message.Message;
 import ru.ryabtsev.cloud.common.message.client.AuthenticationRequest;
 import ru.ryabtsev.cloud.common.message.server.AuthenticationResponse;
-import ru.ryabtsev.cloud.common.message.server.Response;
 
 import java.io.IOException;
 
 /**
  * Implements service which authenticate users by network.
  */
-public class NetworkAuthenticationService implements AuthencticationService {
+public class NetworkAuthenticationService implements AuthenticationService {
 
     private final NetworkService networkService;
 
     /**
      * Constructs network authentication service.
-     * @param networkService
+     * @param networkService network service using to send authentication messages.
      */
     public NetworkAuthenticationService(final NetworkService networkService) {
         this.networkService = networkService;
@@ -33,12 +31,9 @@ public class NetworkAuthenticationService implements AuthencticationService {
             if(response.type().equals(AuthenticationResponse.class)) {
                 return ((AuthenticationResponse)response).isSuccessful();
             }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (ClassNotFoundException | IOException e) {
             e.printStackTrace();
         }
-
         return false;
     }
 }

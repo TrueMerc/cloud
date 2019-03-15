@@ -25,7 +25,7 @@ public class FileMessage extends AbstractMessage {
      * @param partNumber partNumber of file path which should be placed into this file message.
      * @param maximalPayloadSize maximal size of this message payload in bytes (should be the same in one file transmission time).
      * which is contained in the message in whole or in part.
-     * @throws IOException
+     * @throws IOException if can't read enough bytes from file.
      */
     public FileMessage(Path path, int partNumber, int maximalPayloadSize) throws IOException {
         this.fileName = path.getFileName().toString();

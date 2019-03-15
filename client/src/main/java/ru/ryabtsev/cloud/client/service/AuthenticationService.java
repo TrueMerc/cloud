@@ -3,7 +3,7 @@ package ru.ryabtsev.cloud.client.service;
 /**
  * Provides simple authentication service interface.
  */
-public interface AuthencticationService {
+public interface AuthenticationService {
 
     /**
      * Executes authentication procedure.

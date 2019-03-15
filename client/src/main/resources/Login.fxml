@@ -1,32 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
 <?import javafx.geometry.Insets?>
 
-<VBox fx:id="parentWindow"
-      alignment="center"
-      style="-fx-background-color: #0ef7d0"
-      xmlns="http://javafx.com/javafx/8.0.112-ea"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="ru.ryabtsev.cloud.client.LoginController">
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.Font?>
+<BorderPane fx:id="parentWindow"
+            style="-fx-background-color: #0ef7d0"
+            xmlns="http://javafx.com/javafx/8.0.112-ea"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="ru.ryabtsev.cloud.client.LoginController">
+    <top>
+        <fx:include source="MenuBar.fxml"/>
+    </top>
+    <center>
+        <VBox alignment="CENTER">
+            <ImageView fitHeight="128" fitWidth="128">
+                <Image url="cloud_up_icon.png"/>
+            </ImageView>
 
-    <TextField fx:id="login" maxWidth="200" promptText="Login">
-        <VBox.margin>
-            <Insets bottom="10.0" />
-        </VBox.margin>
-    </TextField>
+            <Text text="Simple Cloud 1.0" textAlignment="CENTER" >
+                <font>
+                    <Font size="24"/>
+                </font>
+            </Text>
 
-    <PasswordField fx:id="password" maxWidth="200" promptText="Password" />
+            <VBox alignment="CENTER" VBox.vgrow="NEVER" prefHeight="30"/>
 
-    <Button onAction="#authenticate" prefWidth="200" text="Authenticate" defaultButton="true">
-        <opaqueInsets>
-            <Insets />
-        </opaqueInsets>
-        <VBox.margin>
-            <Insets top="10.0" />
-        </VBox.margin>
-    </Button>
-</VBox>
+            <TextField fx:id="login" maxWidth="200" promptText="Login">
+                <VBox.margin>
+                    <Insets bottom="10.0" />
+                </VBox.margin>
+            </TextField>
+
+            <PasswordField fx:id="password" maxWidth="200" promptText="Password" />
+
+            <Button onAction="#authenticate" prefWidth="200" text="Authenticate" defaultButton="true">
+                <opaqueInsets>
+                    <Insets />
+                </opaqueInsets>
+                <VBox.margin>
+                    <Insets top="10.0" />
+                </VBox.margin>
+            </Button>
+        </VBox>
+    </center>
+</BorderPane>

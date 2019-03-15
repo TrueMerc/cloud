@@ -70,7 +70,7 @@ public class FileDescription implements Serializable {
 
     /**
      * Returns file full name (name + extension).
-     * @return
+     * @return file full name (name + extension).
      */
     public String getFullName() {
         return name + '.' + extension;

@@ -50,11 +50,7 @@ public class NettyNetworkService implements NetworkService {
         }
     }
 
-    /**
-     * Sends message to server.
-     * @param message message to send.
-     * @return true if the message is successfully sent or false if it isn't.
-     */
+    @Override
     public boolean sendMessage(final AbstractMessage message) {
         try {
             out.writeObject(message);
@@ -69,6 +65,11 @@ public class NettyNetworkService implements NetworkService {
     public AbstractMessage receiveMessage() throws ClassNotFoundException, IOException {
         Object object = in.readObject();
         return (AbstractMessage) object;
+    }
+
+    @Override
+    public boolean isConnected() {
+        return socket.isConnected();
     }
 }
 
