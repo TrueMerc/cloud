@@ -1,0 +1,51 @@
+@startuml
+package ru.ryabtsev.cloud <<Frame>> {
+
+    skinparam classAttributeIconSize 0
+
+    package server {
+        ServerApplication ..> Server
+        ServerApplication ..> ServerHandler
+
+        class ServerHandler {
+           - {static} String SERVER_STORAGE_ROOT
+           - {static} Logger LOGGER
+           - UserService userService
+           - String userCurrentFolder
+           - List<String> filesToDownload
+           - Set<String> filesToDelete
+        }
+
+        package jdbc {
+            Configuration<|--JdbcDefaultConfiguration
+            Configuration*--JdbcConnectionManager
+        }
+
+        package service {
+           interface UserService
+           UserService <|.. DummyUserService
+           UserService <|.. JdbcUserServiceBean
+           ServerHandler *-- UserService
+        }
+    }
+
+    package client {
+        class ClientApplication
+        class FileManagementController
+        class LoginController
+
+
+        package gui {
+        }
+
+        package client.service {
+            interface AuthenticationService
+            interface NetworkService
+
+            AuthenticationService<|..NetworkAuthenticationService
+            NetworkService<|..NettyNetworkService
+        }
+    }
+
+}
+@enduml
