@@ -1,7 +1,7 @@
 @startuml
-package ru.ryabtsev.cloud <<Frame>> {
+skinparam classAttributeIconSize 0
 
-    skinparam classAttributeIconSize 0
+package ru.ryabtsev.cloud <<Frame>> {
 
     package server {
         ServerApplication ..> Server
@@ -33,19 +33,42 @@ package ru.ryabtsev.cloud <<Frame>> {
         class ClientApplication
         class FileManagementController
         class LoginController
+        class MenuBarController
 
+        FileManagementController-[hidden]>LoginController
+        LoginController-[hidden]>MenuBarController
 
         package gui {
+            package dialog {
+                class AboutDialog
+                class AboutDialogController
+                class BadRenameArgumentsAlert
+                class NoSelectedFilesAlert
+                class RenameDialog
+            }
+
+            class CommandText
+            class FilesTableView
         }
 
         package client.service {
             interface AuthenticationService
-            interface NetworkService
+            interface NetworkService {
+               void start(String host, int port)
+               void stop()
+               boolean sendMessage(AbstractMessage message)
+               AbstractMessage receiveMessage()
+            }
 
-            AuthenticationService<|..NetworkAuthenticationService
-            NetworkService<|..NettyNetworkService
+            AuthenticationService <|.. NetworkAuthenticationService
+            NetworkService <|.. NettyNetworkService
+            ClientApplication --*NetworkService
+            LoginController --* AuthenticationService
+            FileManagementController --o NetworkService
+
+            NetworkService o-- NetworkAuthenticationService
         }
     }
-
 }
+note top of ru.ryabtsev.cloud : "Client-server cloud application structure."
 @enduml
