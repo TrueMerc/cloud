@@ -13,6 +13,7 @@ import ru.ryabtsev.cloud.client.gui.dialog.BadRenameArgumentsAlert;
 import ru.ryabtsev.cloud.client.gui.dialog.NoSelectedFilesAlert;
 import ru.ryabtsev.cloud.client.gui.dialog.RenameDialog;
 import ru.ryabtsev.cloud.client.service.NetworkService;
+import ru.ryabtsev.cloud.common.ApplicationSide;
 import ru.ryabtsev.cloud.common.FileDescription;
 import ru.ryabtsev.cloud.common.FileOperations;
 import ru.ryabtsev.cloud.common.NetworkSettings;
@@ -63,10 +64,6 @@ public class FileManagementController implements Initializable {
     private List<String> filesToUpload = new LinkedList<>();
 
     private Set<String> filesToDelete = new LinkedHashSet<>();
-
-    private enum ApplicationSide {
-        CLIENT, SERVER
-    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
