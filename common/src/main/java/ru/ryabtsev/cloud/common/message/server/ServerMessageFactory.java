@@ -25,7 +25,12 @@ public class ServerMessageFactory implements MessageFactory {
             case RENAME:
                 return new RenameResponse((String) args[0], (String) args[1], (Boolean) args[2]);
             case UPLOAD:
-                return new UploadResponse((String) args[0], (Integer) args[1]);
+                if(1 == args.length) {
+                    return new UploadResponse((String) args[0]);
+                }
+                if(2 == args.length) {
+                    return new UploadResponse((String) args[0], (Integer) args[1]);
+                }
         }
         return null;
     }

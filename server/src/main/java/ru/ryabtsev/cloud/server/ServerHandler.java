@@ -10,9 +10,12 @@ import ru.ryabtsev.cloud.common.FileOperations;
 import ru.ryabtsev.cloud.common.NetworkSettings;
 import ru.ryabtsev.cloud.common.message.FileMessage;
 import ru.ryabtsev.cloud.common.message.AbstractMessage;
+import ru.ryabtsev.cloud.common.message.MessageFactory;
+import ru.ryabtsev.cloud.common.message.Operations;
 import ru.ryabtsev.cloud.common.message.client.AuthenticationRequest;
 import ru.ryabtsev.cloud.common.message.client.file.*;
 import ru.ryabtsev.cloud.common.message.server.AuthenticationResponse;
+import ru.ryabtsev.cloud.common.message.server.ServerMessageFactory;
 import ru.ryabtsev.cloud.common.message.server.file.DeleteResponse;
 import ru.ryabtsev.cloud.common.message.server.file.FileStructureResponse;
 import ru.ryabtsev.cloud.common.message.server.file.RenameResponse;
@@ -44,6 +47,8 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
     private List<String> filesToDownload = new LinkedList<>();
 
     private Set<String> filesToDelete = new LinkedHashSet<>();
+
+    private MessageFactory messageFactory = new ServerMessageFactory();
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object object) throws Exception {
@@ -100,7 +105,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
             String userRootFolder = userService.getRootFolder(userLogin);
             userCurrentFolder = userService.getCurrentFolder(userLogin);
         }
-        ctx.writeAndFlush(new AuthenticationResponse(true));
+        ctx.writeAndFlush(messageFactory.getMessage(Operations.AUTHENTICATE, true));
     }
 
     private void logMessage(AbstractMessage request) {
@@ -148,7 +153,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
         }
         else {
             boolean result = delete(fileName);
-            ctx.writeAndFlush(new DeleteResponse(result));
+            ctx.writeAndFlush(messageFactory.getMessage(Operations.DELETE, result));
         }
     }
 
@@ -164,7 +169,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
     }
 
     private void processUploadRequest(final ChannelHandlerContext ctx, final UploadRequest request) {
-        ctx.writeAndFlush(new UploadResponse(request.getFileName()));
+        ctx.writeAndFlush(messageFactory.getMessage(Operations.UPLOAD, request));
     }
 
     private void processFileMessage(ChannelHandlerContext ctx, FileMessage message) {
@@ -176,11 +181,11 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
                     openOption
             );
 
-            UploadResponse response = message.hasNext() ?
-                    new UploadResponse(message.getFileName(), message.getPartNumber()) :
-                    new UploadResponse(message.getFileName());
-
-            ctx.writeAndFlush(response);
+            ctx.writeAndFlush(
+                    message.hasNext() ?
+                            messageFactory.getMessage(Operations.UPLOAD, message.getFileName(), message.getPartNumber()) :
+                            messageFactory.getMessage(Operations.UPLOAD, message.getFileName())
+            );
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -200,7 +205,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
         if(Files.exists(path) && Files.isDirectory(path)) {
             final FileDescription description = new FileDescription(path.toFile());
             final FileStructureResponse response = new FileStructureResponse(description);
-            ctx.writeAndFlush(response);
+            ctx.writeAndFlush(messageFactory.getMessage(Operations.FILE_STRUCTURE, description));
         }
     }
 
@@ -211,9 +216,9 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 
         try {
             Files.move(oldPath, newPath);
-            ctx.writeAndFlush(new RenameResponse(request.getOldName(), request.getNewName(), true));
+            ctx.writeAndFlush(messageFactory.getMessage(Operations.RENAME, request.getOldName(), request.getNewName(), true));
         } catch (IOException e) {
-            ctx.writeAndFlush(new RenameResponse(request.getOldName(), request.getNewName(), false));
+            ctx.writeAndFlush(messageFactory.getMessage(Operations.RENAME, request.getOldName(), request.getNewName(), false));
             e.printStackTrace();
         }
     }
