@@ -1,4 +1,4 @@
-package ru.ryabtsev.cloud.common;
+package ru.ryabtsev.cloud.common.message;
 
 public enum ApplicationSide {
     CLIENT, SERVER

@@ -13,7 +13,7 @@ import ru.ryabtsev.cloud.client.gui.dialog.BadRenameArgumentsAlert;
 import ru.ryabtsev.cloud.client.gui.dialog.NoSelectedFilesAlert;
 import ru.ryabtsev.cloud.client.gui.dialog.RenameDialog;
 import ru.ryabtsev.cloud.client.service.NetworkService;
-import ru.ryabtsev.cloud.common.ApplicationSide;
+import ru.ryabtsev.cloud.common.message.ApplicationSide;
 import ru.ryabtsev.cloud.common.FileDescription;
 import ru.ryabtsev.cloud.common.FileOperations;
 import ru.ryabtsev.cloud.common.NetworkSettings;
