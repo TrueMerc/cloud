@@ -26,8 +26,8 @@ public class RenameRequestHandler implements Handler {
 
     @Override
     public void handle() {
-        final Path oldPath = Paths.get(formFolderDependentFileName(request.getOldName()));
-        final Path newPath = Paths.get(formFolderDependentFileName(request.getNewName()));
+        final Path oldPath = Paths.get(userCurrentFolder, request.getOldName());
+        final Path newPath = Paths.get(userCurrentFolder, request.getNewName());
 
         try {
             Files.move(oldPath, newPath);
@@ -36,9 +36,5 @@ public class RenameRequestHandler implements Handler {
             context.writeAndFlush(new RenameResponse(request.getOldName(), request.getNewName(), false));
             e.printStackTrace();
         }
-    }
-
-    private String formFolderDependentFileName(String fileName) {
-        return userCurrentFolder + '/' + fileName;
     }
 }

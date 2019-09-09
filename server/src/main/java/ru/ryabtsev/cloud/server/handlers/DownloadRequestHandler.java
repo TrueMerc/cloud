@@ -44,7 +44,7 @@ public class DownloadRequestHandler implements Handler {
     @Override
     public void handle() {
         final String name = request.getFileName();
-        final Path path = Paths.get(formFolderDependentFileName(name));
+        final Path path = Paths.get(userCurrentFolder, name);
         if (Files.exists(path)) {
             try {
                 FileMessage fm = new FileMessage(
@@ -79,16 +79,11 @@ public class DownloadRequestHandler implements Handler {
         else {
             LOGGER.warning("File with given name " + name + " doesn't exists.");
         }
-
-    }
-
-    private String formFolderDependentFileName(String fileName) {
-        return userCurrentFolder + '/' + fileName;
     }
 
     @SneakyThrows
     private boolean delete(@NotNull final String name) {
-        final Path path = Paths.get(formFolderDependentFileName(name));
+        final Path path = Paths.get(userCurrentFolder, name);
         if(Files.exists(path)) {
             Files.delete(path);
             return true;

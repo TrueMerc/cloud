@@ -16,25 +16,21 @@ import java.nio.file.StandardOpenOption;
  */
 public class FileMessageHandler implements Handler {
 
-   private final ChannelHandlerContext context;
-   private final String userCurrentFolder;
-   private final FileMessage message;
+    private final ChannelHandlerContext context;
+    private final String userCurrentFolder;
+    private final FileMessage message;
 
-   FileMessageHandler(ChannelHandlerContext context, String userCurrentFolder, FileMessage message) {
+    FileMessageHandler(ChannelHandlerContext context, String userCurrentFolder, FileMessage message) {
        this.context = context;
        this.userCurrentFolder = userCurrentFolder;
        this.message = message;
-   }
+    }
 
     @Override
     public void handle() {
         try {
             StandardOpenOption openOption = getOpenOption(message);
-            Files.write(
-                    Paths.get( formFolderDependentFileName(message.getFileName()) ),
-                    message.getData(),
-                    openOption
-            );
+            Files.write(Paths.get(userCurrentFolder, message.getFileName()), message.getData(), openOption);
 
             context.writeAndFlush(
                     message.hasNext() ?
@@ -46,11 +42,10 @@ public class FileMessageHandler implements Handler {
         }
     }
 
-    private String formFolderDependentFileName(String fileName) {
-        return userCurrentFolder + '/' + fileName;
-    }
-
     private StandardOpenOption getOpenOption(final FileMessage message) {
-        return FileOperations.getOpenOption(formFolderDependentFileName(message.getFileName()), message.getPartNumber() == 0);
+        return FileOperations.getOpenOption(
+                Paths.get(userCurrentFolder, message.getFileName()).toString(),
+                message.getPartNumber() == 0
+        );
     }
 }

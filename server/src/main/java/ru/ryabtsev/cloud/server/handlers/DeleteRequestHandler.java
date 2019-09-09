@@ -54,16 +54,12 @@ public class DeleteRequestHandler implements Handler {
 
     @SneakyThrows
     private boolean delete(@NotNull final String name) {
-        final Path path = Paths.get(formFolderDependentFileName(name));
+        final Path path = Paths.get(userCurrentFolder, name);
         if(Files.exists(path)) {
             Files.delete(path);
             return true;
         }
         LOGGER.warning("File with given name " + name + " doesn't exists.");
         return false;
-    }
-
-    private String formFolderDependentFileName(String fileName) {
-        return userCurrentFolder + '/' + fileName;
     }
 }
