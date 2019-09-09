@@ -18,7 +18,7 @@ public class ClientMessageFactory implements MessageFactory {
             case FILE_STRUCTURE:
                 return new FileStructureRequest((String)args[0], (String)args[1]);
             case RENAME:
-                return new RenameRequest((String)args[0], (String)args[1]);
+                return new RenameRequest((String)args[0], (String)args[1], (String)args[2]);
             case UPLOAD:
                 return new UploadRequest((String)args[0], (String)args[1], (Integer)args[2]);
         }
