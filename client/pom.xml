@@ -9,6 +9,17 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <repositories>
+        <repository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>bintray-jerady-maven</id>
+            <name>bintray</name>
+            <url>https://dl.bintray.com/jerady/maven</url>
+        </repository>
+    </repositories>
+
     <artifactId>client</artifactId>
     <version>1.0</version>
 
@@ -16,14 +27,19 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx</artifactId>
-            <version>12-ea+13</version>
+            <version>13-ea+8</version>
             <scope>compile</scope>
             <type>pom</type>
         </dependency>
         <dependency>
+            <groupId>org.controlsfx</groupId>
+            <artifactId>controlsfx</artifactId>
+            <version>11.0.0</version>
+        </dependency>
+        <dependency>
             <groupId>de.jensd</groupId>
-            <artifactId>fontawesomefx</artifactId>
-            <version>8.9</version>
+            <artifactId>fontawesomefx-fontawesome</artifactId>
+            <version>4.7.0-11</version>
         </dependency>
         <dependency>
             <groupId>ru.ryabtsev</groupId>
@@ -32,5 +48,18 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>0.0.3</version>
+                <configuration>
+                    <mainClass>ru.ryabtsev.cloud.client.ClientApplication</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

@@ -2,13 +2,13 @@ package ru.ryabtsev.cloud.common.message.client.file;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
-import ru.ryabtsev.cloud.common.message.AbstractMessage;
+import ru.ryabtsev.cloud.common.message.UserDependentMessage;
 
 /**
  * Implements file renaming request.
  */
 @Getter
-public class RenameRequest extends AbstractMessage implements FileRequest {
+public class RenameRequest extends UserDependentMessage implements FileRequest {
 
     private final String oldName;
     private final String newName;
@@ -18,7 +18,8 @@ public class RenameRequest extends AbstractMessage implements FileRequest {
      * @param oldName old file name.
      * @param newName new file name.
      */
-    public RenameRequest(@NotNull final String oldName, @NotNull final String newName) {
+    public RenameRequest(@NotNull final String login, @NotNull final String oldName, @NotNull final String newName) {
+        super(login);
         this.oldName = oldName;
         this.newName = newName;
     }

@@ -13,6 +13,7 @@ import ru.ryabtsev.cloud.client.gui.dialog.BadRenameArgumentsAlert;
 import ru.ryabtsev.cloud.client.gui.dialog.NoSelectedFilesAlert;
 import ru.ryabtsev.cloud.client.gui.dialog.RenameDialog;
 import ru.ryabtsev.cloud.client.service.NetworkService;
+import ru.ryabtsev.cloud.common.message.ApplicationSide;
 import ru.ryabtsev.cloud.common.FileDescription;
 import ru.ryabtsev.cloud.common.FileOperations;
 import ru.ryabtsev.cloud.common.NetworkSettings;
@@ -63,10 +64,6 @@ public class FileManagementController implements Initializable {
     private List<String> filesToUpload = new LinkedList<>();
 
     private Set<String> filesToDelete = new LinkedHashSet<>();
-
-    private enum ApplicationSide {
-        CLIENT, SERVER
-    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -189,6 +186,7 @@ public class FileManagementController implements Initializable {
                 try {
                     networkService.sendMessage(
                             new FileMessage(
+                                    userName,
                                     Paths.get(formDirectoryDependentFileName(response.getFileName())),
                                     response.getNextNumber(),
                                     NetworkSettings.MAXIMAL_PAYLOAD_SIZE_IN_BYTES
@@ -325,7 +323,7 @@ public class FileManagementController implements Initializable {
                 refreshClientFilesList();
             }
             else {
-                networkService.sendMessage(new RenameRequest(oldName, newName));
+                networkService.sendMessage(new RenameRequest(userName, oldName, newName));
             }
         }
     }
@@ -371,6 +369,7 @@ public class FileManagementController implements Initializable {
         try {
             networkService.sendMessage(
                     new FileMessage(
+                            userName,
                             Paths.get(formDirectoryDependentFileName(fileDescription.getFullName())),
                             0,
                             NetworkSettings.MAXIMAL_PAYLOAD_SIZE_IN_BYTES

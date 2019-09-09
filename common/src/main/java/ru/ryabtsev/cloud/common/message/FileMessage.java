@@ -13,7 +13,7 @@ import java.nio.file.Path;
  * Implements message which contains file or its part.
  */
 @Getter
-public class FileMessage extends AbstractMessage {
+public class FileMessage extends UserDependentMessage {
     private String fileName;
     private byte[] data;
     int partNumber;
@@ -21,13 +21,15 @@ public class FileMessage extends AbstractMessage {
 
     /**
      * Constructs file message with given file name.
-     * @param path path corresponding to the file,
+     * @param login user login.
+     * @param path path corresponding to the file.
      * @param partNumber partNumber of file path which should be placed into this file message.
      * @param maximalPayloadSize maximal size of this message payload in bytes (should be the same in one file transmission time).
      * which is contained in the message in whole or in part.
      * @throws IOException if can't read enough bytes from file.
      */
-    public FileMessage(Path path, int partNumber, int maximalPayloadSize) throws IOException {
+    public FileMessage(String login, Path path, int partNumber, int maximalPayloadSize) throws IOException {
+        super(login);
         this.fileName = path.getFileName().toString();
         this.partNumber = partNumber;
 

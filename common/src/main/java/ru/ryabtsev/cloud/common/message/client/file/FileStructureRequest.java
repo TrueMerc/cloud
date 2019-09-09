@@ -2,13 +2,13 @@ package ru.ryabtsev.cloud.common.message.client.file;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
-import ru.ryabtsev.cloud.common.message.client.UserDependentRequest;
+import ru.ryabtsev.cloud.common.message.UserDependentMessage;
 
 /**
  * Implements client request to server to get structure of folder with given name.
  */
 @Getter
-public class FileStructureRequest extends UserDependentRequest {
+public class FileStructureRequest extends UserDependentMessage {
 
     private String folderName;
 

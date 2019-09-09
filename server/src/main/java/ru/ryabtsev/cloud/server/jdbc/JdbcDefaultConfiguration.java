@@ -9,8 +9,8 @@ public class JdbcDefaultConfiguration extends Configuration {
     private static final String DEFAULT_DATABASE_TYPE = "mysql";
     private static final String DEFAULT_DATABASE_NAME = "cloud_users";
     private static final String DEFAULT_HOST = "localhost";
-    private static final String DEFAULT_USERNAME = "cloud_user_service";
-    private static final String DEFAULT_PASSWORD = "!Mega@destroyer123123";
+    private static final String DEFAULT_USERNAME = "user";
+    private static final String DEFAULT_PASSWORD = "#Test123@";
     private static final Integer DEFAULT_PORT = 3306;
 
     {
