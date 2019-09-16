@@ -4,6 +4,7 @@ import io.netty.channel.ChannelHandlerContext;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import ru.ryabtsev.cloud.common.NetworkSettings;
+import ru.ryabtsev.cloud.common.interfaces.MessageHandler;
 import ru.ryabtsev.cloud.common.message.FileMessage;
 import ru.ryabtsev.cloud.common.message.client.file.DownloadRequest;
 import ru.ryabtsev.cloud.common.message.server.file.DeleteResponse;
@@ -16,7 +17,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class DownloadRequestHandler implements Handler {
+public class DownloadRequestHandler implements MessageHandler {
 
     private static final Logger LOGGER = Logger.getLogger(ServerHandler.class.getSimpleName());
 

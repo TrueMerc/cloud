@@ -1,6 +1,7 @@
 package ru.ryabtsev.cloud.server.handlers;
 
 import io.netty.channel.ChannelHandlerContext;
+import ru.ryabtsev.cloud.common.interfaces.MessageHandler;
 import ru.ryabtsev.cloud.common.message.client.file.RenameRequest;
 import ru.ryabtsev.cloud.common.message.server.file.RenameResponse;
 
@@ -12,7 +13,7 @@ import java.nio.file.Paths;
 /**
  * Handles rename request.
  */
-public class RenameRequestHandler implements Handler {
+public class RenameRequestHandler implements MessageHandler {
 
     private final ChannelHandlerContext context;
     private final String userCurrentFolder;

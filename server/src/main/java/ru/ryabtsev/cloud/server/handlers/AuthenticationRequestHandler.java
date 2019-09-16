@@ -1,12 +1,12 @@
 package ru.ryabtsev.cloud.server.handlers;
 
 import io.netty.channel.ChannelHandlerContext;
-import ru.ryabtsev.cloud.common.message.Operations;
+import ru.ryabtsev.cloud.common.interfaces.MessageHandler;
 import ru.ryabtsev.cloud.common.message.client.AuthenticationRequest;
 import ru.ryabtsev.cloud.common.message.server.AuthenticationResponse;
 import ru.ryabtsev.cloud.server.service.UserService;
 
-public class AuthenticationRequestHandler implements Handler {
+public class AuthenticationRequestHandler implements MessageHandler {
     private final ChannelHandlerContext context;
     private final UserService userService;
     private final AuthenticationRequest request;

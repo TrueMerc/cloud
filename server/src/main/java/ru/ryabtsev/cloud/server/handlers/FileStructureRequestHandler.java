@@ -2,6 +2,7 @@ package ru.ryabtsev.cloud.server.handlers;
 
 import io.netty.channel.ChannelHandlerContext;
 import ru.ryabtsev.cloud.common.FileDescription;
+import ru.ryabtsev.cloud.common.interfaces.MessageHandler;
 import ru.ryabtsev.cloud.common.message.client.file.FileStructureRequest;
 import ru.ryabtsev.cloud.common.message.server.file.FileStructureResponse;
 import ru.ryabtsev.cloud.server.service.UserService;
@@ -13,7 +14,7 @@ import java.nio.file.Paths;
 /**
  * Handles file structure request.
  */
-public class FileStructureRequestHandler implements Handler {
+public class FileStructureRequestHandler implements MessageHandler {
 
     private final ChannelHandlerContext context;
     private final UserService userService;

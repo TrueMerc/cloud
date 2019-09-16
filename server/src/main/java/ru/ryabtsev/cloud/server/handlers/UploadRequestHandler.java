@@ -1,10 +1,11 @@
 package ru.ryabtsev.cloud.server.handlers;
 
 import io.netty.channel.ChannelHandlerContext;
+import ru.ryabtsev.cloud.common.interfaces.MessageHandler;
 import ru.ryabtsev.cloud.common.message.client.file.UploadRequest;
 import ru.ryabtsev.cloud.common.message.server.file.UploadResponse;
 
-public class UploadRequestHandler implements Handler {
+public class UploadRequestHandler implements MessageHandler {
 
 
     private final ChannelHandlerContext context;

@@ -11,6 +11,12 @@ import java.nio.file.StandardOpenOption;
  */
 public class FileOperations {
 
+    /**
+     * Returns file open option for file with given name.
+     * @param fileName file name.
+     * @param isFirstPart the first part of a file identifier.
+     * @return one of standard file open options.
+     */
     public static StandardOpenOption getOpenOption(@NotNull final String fileName, boolean isFirstPart) {
         StandardOpenOption result = StandardOpenOption.CREATE;
         if(Files.exists(Paths.get( fileName ))) {
