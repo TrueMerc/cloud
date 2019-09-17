@@ -1,6 +1,8 @@
 package ru.ryabtsev.cloud.server.handlers;
 
 import io.netty.channel.ChannelHandlerContext;
+import ru.ryabtsev.cloud.common.interfaces.MessageHandler;
+import ru.ryabtsev.cloud.common.interfaces.MessageHandlerFactory;
 import ru.ryabtsev.cloud.common.message.AbstractMessage;
 import ru.ryabtsev.cloud.common.message.FileMessage;
 import ru.ryabtsev.cloud.common.message.Message;
@@ -12,7 +14,10 @@ import ru.ryabtsev.cloud.server.service.UserService;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class HandlerFactory {
+/**
+ * Implements handlers factory for messages which received by server.
+ */
+public class ServerMessageHandlerFactory implements MessageHandlerFactory {
 
     private static final Logger LOGGER = Logger.getLogger(ServerHandler.class.getSimpleName());
 
@@ -21,18 +26,31 @@ public class HandlerFactory {
     private final List<String> downloadList;
     private final List<String> deleteList;
 
-    public HandlerFactory(ChannelHandlerContext context,
-                          UserService service,
-                          List<String> downloadList,
-                          List<String> deleteList)
-    {
+    /**
+     * Constructs handlers factory for messages which received by server.
+     * @param context channel handler context.
+     * @param service user management service.
+     * @param downloadList list of files which should be downloaded from server.
+     * @param deleteList list of files which should be deleted from server.
+     */
+    public ServerMessageHandlerFactory(
+            ChannelHandlerContext context,
+            UserService service,
+            List<String> downloadList,
+            List<String> deleteList
+    ) {
         this.context = context;
         userService = service;
         this.downloadList = downloadList;
         this.deleteList = deleteList;
     }
 
-    public Handler getHandler(Message message) {
+    /**
+     * Returns handler for given message.
+     * @param message message.
+     * @return handler for given message.
+     */
+    public MessageHandler getHandler(Message message) {
         AbstractMessage abstractMessage = (AbstractMessage) message;
 
         if(null == message || null == abstractMessage) {

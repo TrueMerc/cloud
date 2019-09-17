@@ -3,6 +3,7 @@ package ru.ryabtsev.cloud.server.handlers;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
+import ru.ryabtsev.cloud.common.interfaces.MessageHandler;
 import ru.ryabtsev.cloud.common.message.client.file.DeleteRequest;
 import ru.ryabtsev.cloud.common.message.server.file.DeleteResponse;
 import ru.ryabtsev.cloud.server.ServerHandler;
@@ -16,7 +17,7 @@ import java.util.logging.Logger;
 /**
  * Handles delete request.
  */
-public class DeleteRequestHandler implements Handler {
+public class DeleteRequestHandler implements MessageHandler {
 
     private static final Logger LOGGER = Logger.getLogger(ServerHandler.class.getSimpleName());
 

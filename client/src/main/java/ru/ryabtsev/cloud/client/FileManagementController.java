@@ -361,7 +361,7 @@ public class FileManagementController implements Initializable {
             case SERVER:
                 return this::sendDownloadRequest;
             default:
-                throw new RuntimeException("Unexpected client-server application size.");
+                throw new RuntimeException("Unexpected client-server application side.");
         }
     }
 

@@ -5,21 +5,14 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.ReferenceCountUtil;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
-import ru.ryabtsev.cloud.common.FileDescription;
 import ru.ryabtsev.cloud.common.FileOperations;
-import ru.ryabtsev.cloud.common.NetworkSettings;
+import ru.ryabtsev.cloud.common.interfaces.MessageHandlerFactory;
 import ru.ryabtsev.cloud.common.message.*;
-import ru.ryabtsev.cloud.common.message.client.AuthenticationRequest;
-import ru.ryabtsev.cloud.common.message.client.file.*;
-import ru.ryabtsev.cloud.common.message.server.ServerMessageFactory;
-import ru.ryabtsev.cloud.common.message.server.file.DeleteResponse;
-import ru.ryabtsev.cloud.common.message.server.file.FileStructureResponse;
-import ru.ryabtsev.cloud.server.handlers.Handler;
-import ru.ryabtsev.cloud.server.handlers.HandlerFactory;
+import ru.ryabtsev.cloud.common.interfaces.MessageHandler;
+import ru.ryabtsev.cloud.server.handlers.ServerMessageHandlerFactory;
 import ru.ryabtsev.cloud.server.service.JdbcUserServiceBean;
 import ru.ryabtsev.cloud.server.service.UserService;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -44,10 +37,10 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object object) throws Exception {
-        final HandlerFactory handlerFactory = new HandlerFactory(ctx, userService, filesToDownload, filesToDelete);
+        final MessageHandlerFactory messageHandlerFactory = new ServerMessageHandlerFactory(ctx, userService, filesToDownload, filesToDelete);
         try {
             Message message = (Message) object;
-            final Handler handler = handlerFactory.getHandler(message);
+            final MessageHandler handler = messageHandlerFactory.getHandler(message);
             handler.handle();
         }
         catch(ClassCastException e) {

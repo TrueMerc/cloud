@@ -2,8 +2,8 @@ package ru.ryabtsev.cloud.server.handlers;
 
 import io.netty.channel.ChannelHandlerContext;
 import ru.ryabtsev.cloud.common.FileOperations;
+import ru.ryabtsev.cloud.common.interfaces.MessageHandler;
 import ru.ryabtsev.cloud.common.message.FileMessage;
-import ru.ryabtsev.cloud.common.message.Operations;
 import ru.ryabtsev.cloud.common.message.server.file.UploadResponse;
 
 import java.io.IOException;
@@ -14,7 +14,7 @@ import java.nio.file.StandardOpenOption;
 /**
  * Handles file message.
  */
-public class FileMessageHandler implements Handler {
+public class FileMessageHandler implements MessageHandler {
 
     private final ChannelHandlerContext context;
     private final String userCurrentFolder;
