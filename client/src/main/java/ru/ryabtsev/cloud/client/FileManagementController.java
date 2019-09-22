@@ -24,10 +24,7 @@ import ru.ryabtsev.cloud.common.message.client.file.DeleteRequest;
 import ru.ryabtsev.cloud.common.message.client.file.DownloadRequest;
 import ru.ryabtsev.cloud.common.message.client.file.FileStructureRequest;
 import ru.ryabtsev.cloud.common.message.client.file.RenameRequest;
-import ru.ryabtsev.cloud.common.message.server.file.DeleteResponse;
-import ru.ryabtsev.cloud.common.message.server.file.FileStructureResponse;
-import ru.ryabtsev.cloud.common.message.server.file.RenameResponse;
-import ru.ryabtsev.cloud.common.message.server.file.UploadResponse;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -120,34 +117,8 @@ public class FileManagementController implements Initializable {
             try {
                 while (networkService.isConnected()) {
                     Message message = networkService.receiveMessage();
-//                    if(message == null) {
-//                        LOGGER.warning("null message received.");
-//                        continue;
-//                    }
-
                     var handler = messageHandlerFactory.getHandler(message);
                     handler.handle();
-
-
-//                    Class<?> messageType = message.type();
-//                    if(messageType.equals(FileMessage.class)) {
-//                        processFileMessage((FileMessage)message);
-//                    }
-//                    else if(messageType.equals(FileStructureResponse.class)) {
-//                        processFileStructureResponse((FileStructureResponse)message);
-//                    }
-//                    else if(messageType.equals(UploadResponse.class)) {
-//                        processUploadResponse((UploadResponse)message);
-//                    }
-//                    else if(messageType.equals(DeleteResponse.class)) {
-//                        processDeleteResponse((DeleteResponse) message);
-//                    }
-//                    else if(messageType.equals(RenameResponse.class)) {
-//                        processRenameResponse((RenameResponse)message);
-//                    }
-//                    else {
-//                        LOGGER.warning("Unexpected message received with type " + message.type());
-//                    }
                 }
             } catch (ClassNotFoundException | IOException e) {
                 e.printStackTrace();
@@ -187,49 +158,6 @@ public class FileManagementController implements Initializable {
         AbstractMessage fileStructureRequest = new FileStructureRequest(userName);
         networkService.sendMessage(fileStructureRequest);
         LOGGER.info(FileStructureRequest.class.getSimpleName() + " sent");
-    }
-
-//    private void processFileMessage(final FileMessage message) {
-//        try {
-//            StandardOpenOption openOption = getOpenOption(message);
-//            Files.write(
-//                    Paths.get( formDirectoryDependentFileName(message.getFileName()) ),
-//                    message.getData(),
-//                    openOption
-//            );
-//            if( message.hasNext() ) {
-//                networkService.sendMessage(
-//                        new DownloadRequest(userName, message.getFileName(), message.getPartNumber() + 1)
-//                );
-//            }
-//            else {
-//                refreshClientFilesList();
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
-//    private StandardOpenOption getOpenOption(final FileMessage message) {
-//        return FileOperations.getOpenOption(formDirectoryDependentFileName(message.getFileName()), message.getPartNumber() == 0);
-//    }
-
-//    private void processFileStructureResponse(FileStructureResponse message) {
-//        if (Platform.isFxApplicationThread()) {
-//            refreshFilesList(serverFilesView, message.getDescription());
-//        } else {
-//            Platform.runLater(() -> refreshFilesList(serverFilesView, message.getDescription()));
-//        }
-//    }
-
-    private void processUploadResponse(final UploadResponse response) {
-
-    }
-
-    private void processRenameResponse(final RenameResponse response) {
-        if(response.isSuccessful()) {
-            requestServerFilesList();
-        }
     }
 
     private static void refreshFilesList(
@@ -404,15 +332,5 @@ public class FileManagementController implements Initializable {
     private void sendDownloadRequest(@NotNull final FileDescription fileDescription) {
         String fileName = fileDescription.getName() + "." + fileDescription.getExtension();
         networkService.sendMessage(new DownloadRequest(userName, fileName, 0));
-    }
-
-
-    private void processDeleteResponse(DeleteResponse response) {
-        if(response.isSuccessful()) {
-            requestServerFilesList();
-        }
-        else {
-            LOGGER.warning("File deletion problem.");
-        }
     }
 }

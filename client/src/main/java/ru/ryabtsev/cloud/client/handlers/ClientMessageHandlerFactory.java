@@ -27,9 +27,8 @@ public class ClientMessageHandlerFactory implements MessageHandlerFactory {
 
     @Override
     public MessageHandler getHandler(Message message) {
-
         if(message.type().equals(DeleteResponse.class)) {
-
+            return new DeleteResponseHandler(controller, (DeleteResponse)message);
         }
         else if(message.type().equals(FileMessage.class)) {
             return new FileMessageHandler(controller, (FileMessage)message);
@@ -38,10 +37,10 @@ public class ClientMessageHandlerFactory implements MessageHandlerFactory {
             return new FileStructureResponseHandler(controller, (FileStructureResponse)message);
         }
         else if(message.type().equals(RenameResponse.class)) {
-
+            return new RenameResponseHandler(controller, (RenameResponse)message);
         }
         else if(message.type().equals(UploadResponse.class)) {
-
+            return new UploadResponseHandler(controller, (UploadResponse)message);
         }
 
         LOGGER.warning("Unexpected message received with type " + message.type());
