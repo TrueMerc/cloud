@@ -1,7 +1,7 @@
 package ru.ryabtsev.cloud.client.service;
 
 import org.jetbrains.annotations.NotNull;
-import ru.ryabtsev.cloud.common.message.AbstractMessage;
+import ru.ryabtsev.cloud.common.message.Message;
 import ru.ryabtsev.cloud.common.message.client.AuthenticationRequest;
 import ru.ryabtsev.cloud.common.message.server.AuthenticationResponse;
 
@@ -27,7 +27,7 @@ public class NetworkAuthenticationService implements AuthenticationService {
         networkService.sendMessage(new AuthenticationRequest(login, password));
 
         try {
-            AbstractMessage response = networkService.receiveMessage();
+            Message response = networkService.receiveMessage();
             if(response.type().equals(AuthenticationResponse.class)) {
                 return ((AuthenticationResponse)response).isSuccessful();
             }

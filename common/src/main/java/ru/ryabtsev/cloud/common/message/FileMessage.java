@@ -66,4 +66,8 @@ public class FileMessage extends UserDependentMessage {
     public boolean hasNext() {
         return !isTail;
     }
+
+    public boolean isFirstPart() {
+        return 0 == partNumber;
+    }
 }

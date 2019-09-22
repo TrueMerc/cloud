@@ -53,7 +53,7 @@ public class ServerMessageHandlerFactory implements MessageHandlerFactory {
         AbstractMessage abstractMessage = (AbstractMessage) message;
 
         if(null == message || null == abstractMessage) {
-            LOGGER.warning("null message received.");
+            LOGGER.warning("Null message received.");
             return null;
         }
 
