@@ -8,7 +8,6 @@ import ru.ryabtsev.cloud.common.message.FileMessage;
 import ru.ryabtsev.cloud.common.message.Message;
 import ru.ryabtsev.cloud.common.message.client.AuthenticationRequest;
 import ru.ryabtsev.cloud.common.message.client.file.*;
-import ru.ryabtsev.cloud.server.ServerHandler;
 import ru.ryabtsev.cloud.server.service.UserService;
 
 import java.util.List;
@@ -19,7 +18,7 @@ import java.util.logging.Logger;
  */
 public class ServerMessageHandlerFactory implements MessageHandlerFactory {
 
-    private static final Logger LOGGER = Logger.getLogger(ServerHandler.class.getSimpleName());
+    private static final Logger LOGGER = Logger.getLogger(ServerMessageHandlerFactory.class.getSimpleName());
 
     private final ChannelHandlerContext context;
     private final UserService userService;
