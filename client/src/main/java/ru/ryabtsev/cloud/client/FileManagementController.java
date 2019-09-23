@@ -8,6 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
+import ru.ryabtsev.cloud.client.commands.Delete;
 import ru.ryabtsev.cloud.client.gui.FilesTableView;
 import ru.ryabtsev.cloud.client.gui.dialog.BadRenameArgumentsAlert;
 import ru.ryabtsev.cloud.client.gui.dialog.NoSelectedFilesAlert;
@@ -179,26 +180,12 @@ public class FileManagementController implements Initializable {
 
     public void delete(ApplicationSide side) {
         final ObservableList<FileDescription> selectedFilesDescription = getSelectedFiles(side);
-        for( FileDescription description : selectedFilesDescription ) {
-            if(ApplicationSide.CLIENT == side) {
-                final String name = description.getFullName();
-                if( filesToUpload.contains(name) ) {
-                    filesToDelete.add(name);
-                }
-                else {
-                    delete( Paths.get(currentFolderName, name) );
-                }
-            }
-            else {
-                networkService.sendMessage(new DeleteRequest(userName, description.getFullName()));
-            }
-        }
+        new Delete(this, selectedFilesDescription, side).execute();
     }
 
     @SneakyThrows
     public void delete(@NotNull Path path) {
         Files.delete(path);
-        refreshClientFilesList();
     }
 
     public void download() {
@@ -266,9 +253,7 @@ public class FileManagementController implements Initializable {
         if(result.isPresent() && !("".equals(result.get())) && !existsInCurrentFolder(result.get(), side)) {
             String newName = result.get();
             if(ApplicationSide.CLIENT == side) {
-                Files.move(
-                        Paths.get(currentFolderName, oldName), Paths.get(currentFolderName, newName)
-                );
+                Files.move(Paths.get(currentFolderName, oldName), Paths.get(currentFolderName, newName));
                 refreshClientFilesList();
             }
             else {
