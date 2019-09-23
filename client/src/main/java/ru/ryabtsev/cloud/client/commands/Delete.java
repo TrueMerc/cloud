@@ -14,13 +14,11 @@ import java.nio.file.Paths;
 /**
  * Implements deletion command.
  */
-public class Delete implements Command {
+public class Delete extends SequentialCommand {
 
     private final FileManagementController controller;
     private final ObservableList<FileDescription> files;
     private final ApplicationSide side;
-
-    private Command next = null;
 
     /**
      * Constructs deletion command.
@@ -54,20 +52,5 @@ public class Delete implements Command {
                 network.sendMessage(new DeleteRequest(user, description.getFullName()));
             }
         }
-    }
-
-    @Override
-    public boolean hasNext() {
-        return next != null;
-    }
-
-    @Override
-    public Command next() {
-        return next;
-    }
-
-    @Override
-    public void add(Command command) {
-        next = command;
     }
 }

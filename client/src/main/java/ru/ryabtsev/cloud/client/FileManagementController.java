@@ -8,7 +8,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
+import ru.ryabtsev.cloud.client.commands.Copy;
 import ru.ryabtsev.cloud.client.commands.Delete;
+import ru.ryabtsev.cloud.client.commands.Download;
+import ru.ryabtsev.cloud.client.commands.Upload;
 import ru.ryabtsev.cloud.client.gui.FilesTableView;
 import ru.ryabtsev.cloud.client.gui.dialog.BadRenameArgumentsAlert;
 import ru.ryabtsev.cloud.client.gui.dialog.NoSelectedFilesAlert;
@@ -183,11 +186,6 @@ public class FileManagementController implements Initializable {
         new Delete(this, selectedFilesDescription, side).execute();
     }
 
-    @SneakyThrows
-    public void delete(@NotNull Path path) {
-        Files.delete(path);
-    }
-
     public void download() {
         copy(ApplicationSide.SERVER, ApplicationSide.CLIENT);
     }
@@ -213,20 +211,10 @@ public class FileManagementController implements Initializable {
             alert.showAndWait();
             return;
         }
-
-        if(ApplicationSide.CLIENT == from) {
-            filesToUpload.clear();
-            filesToUpload.addAll(
-                    selectedFilesDescription.stream()
-                    .map(FileDescription::getFullName)
-                    .collect(Collectors.toList())
-            );
-        }
-
-        Consumer<FileDescription> onCopySendMethod = getOnCopySendMethod(from);
-        for( FileDescription description : selectedFilesDescription ) {
-            onCopySendMethod.accept(description);
-        }
+        Copy copy =  (ApplicationSide.CLIENT == from) ?
+                new Upload(this, selectedFilesDescription) :
+                new Download( this, selectedFilesDescription);
+        copy.execute();
     }
 
     public void clientRename() {
@@ -288,34 +276,34 @@ public class FileManagementController implements Initializable {
         }
     }
 
-    private Consumer<FileDescription> getOnCopySendMethod(ApplicationSide from) throws RuntimeException {
-        switch(from) {
-            case CLIENT:
-                return this::sendUploadRequest;
-            case SERVER:
-                return this::sendDownloadRequest;
-            default:
-                throw new RuntimeException("Unexpected client-server application side.");
-        }
-    }
-
-    private void sendUploadRequest(@NotNull final FileDescription fileDescription) {
-        try {
-            networkService.sendMessage(
-                    new FileMessage(
-                            userName,
-                            Paths.get(currentFolderName, fileDescription.getFullName()),
-                            0,
-                            NetworkSettings.MAXIMAL_PAYLOAD_SIZE_IN_BYTES
-                    )
-            );
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void sendDownloadRequest(@NotNull final FileDescription fileDescription) {
-        String fileName = fileDescription.getName() + "." + fileDescription.getExtension();
-        networkService.sendMessage(new DownloadRequest(userName, fileName, 0));
-    }
+//    private Consumer<FileDescription> getOnCopySendMethod(ApplicationSide from) throws RuntimeException {
+//        switch(from) {
+//            case CLIENT:
+//                return this::sendUploadRequest;
+//            case SERVER:
+//                return this::sendDownloadRequest;
+//            default:
+//                throw new RuntimeException("Unexpected client-server application side.");
+//        }
+//    }
+//
+//    private void sendUploadRequest(@NotNull final FileDescription fileDescription) {
+//        try {
+//            networkService.sendMessage(
+//                    new FileMessage(
+//                            userName,
+//                            Paths.get(currentFolderName, fileDescription.getFullName()),
+//                            0,
+//                            NetworkSettings.MAXIMAL_PAYLOAD_SIZE_IN_BYTES
+//                    )
+//            );
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    private void sendDownloadRequest(@NotNull final FileDescription fileDescription) {
+//        String fileName = fileDescription.getName() + "." + fileDescription.getExtension();
+//        networkService.sendMessage(new DownloadRequest(userName, fileName, 0));
+//    }
 }

@@ -7,6 +7,7 @@ import ru.ryabtsev.cloud.common.message.FileMessage;
 import ru.ryabtsev.cloud.common.message.server.file.UploadResponse;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 
 /**
@@ -48,7 +49,12 @@ public class UploadResponseHandler implements MessageHandler {
                 controller.getFilesToUpload().remove(name);
                 final var filesToDelete = controller.getFilesToDelete();
                 if(filesToDelete.contains(name)) {
-                    controller.delete( Paths.get(controller.getCurrentFolderName(), name) );
+                    try {
+                        Files.delete(Paths.get(controller.getCurrentFolderName(), name));
+                    }
+                    catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     filesToDelete.remove(name);
                 }
             }
