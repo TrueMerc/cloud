@@ -1,6 +1,6 @@
 package ru.ryabtsev.cloud.client.service;
 
-import ru.ryabtsev.cloud.common.message.AbstractMessage;
+import ru.ryabtsev.cloud.common.message.Message;
 
 import java.io.IOException;
 
@@ -26,7 +26,7 @@ public interface NetworkService {
      * @param message message to send.
      * @return true if the message is successfully sent or false if it isn't.
      */
-    boolean sendMessage(AbstractMessage message);
+    boolean sendMessage(Message message);
 
     /**
      * Receives message from server.
@@ -34,7 +34,7 @@ public interface NetworkService {
      * @throws ClassNotFoundException if class can't be restored after serialization.
      * @throws IOException on input-output error.
      */
-     AbstractMessage receiveMessage() throws ClassNotFoundException, IOException;
+     Message receiveMessage() throws ClassNotFoundException, IOException;
 
     /**
      * Returns true if connection is established and false in the other case.
