@@ -30,7 +30,6 @@ public abstract class Copy extends SequentialCommand {
 
     @Override
     public void execute() {
-
         if(ApplicationSide.CLIENT == from) {
             final var upload = controller.getFilesToUpload();
             upload.clear();
@@ -43,6 +42,7 @@ public abstract class Copy extends SequentialCommand {
         for( FileDescription file : files ) {
             onSendMethod(file);
         }
+        super.execute();
     }
 
     protected abstract void onSendMethod(FileDescription file);
