@@ -42,9 +42,7 @@ public abstract class Copy extends SequentialCommand {
         for( FileDescription file : files ) {
             onSendMethod(file);
         }
-        super.execute();
     }
 
     protected abstract void onSendMethod(FileDescription file);
-
 }
