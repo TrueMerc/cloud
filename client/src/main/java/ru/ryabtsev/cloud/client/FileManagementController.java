@@ -8,10 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
-import ru.ryabtsev.cloud.client.commands.Copy;
-import ru.ryabtsev.cloud.client.commands.Delete;
-import ru.ryabtsev.cloud.client.commands.Download;
-import ru.ryabtsev.cloud.client.commands.Upload;
+import ru.ryabtsev.cloud.client.commands.*;
 import ru.ryabtsev.cloud.client.gui.FilesTableView;
 import ru.ryabtsev.cloud.client.gui.dialog.BadRenameArgumentsAlert;
 import ru.ryabtsev.cloud.client.gui.dialog.NoSelectedFilesAlert;
@@ -191,8 +188,11 @@ public class FileManagementController implements Initializable {
     }
 
     public void cutAndDownload() {
-        download();
-        serverDelete();
+        final var files = getSelectedFiles(ApplicationSide.SERVER);
+        Command command = new Upload(this, files);
+        command.add(new Delete(this, files, ApplicationSide.SERVER));
+        command.execute();
+        refreshClientFilesList();
     }
 
     public void upload() {
@@ -200,20 +200,22 @@ public class FileManagementController implements Initializable {
     }
 
     public void cutAndUpload() {
-        upload();
-        clientDelete();
+        final var files = getSelectedFiles(ApplicationSide.CLIENT);
+        Command command = new Upload(this, files);
+        command.add(new Delete(this, files, ApplicationSide.CLIENT));
+        command.execute();
+        refreshClientFilesList();
     }
 
     private void copy(ApplicationSide from, ApplicationSide to) {
-        final ObservableList<FileDescription> selectedFilesDescription = getSelectedFiles(from);
-        if( selectedFilesDescription == null || selectedFilesDescription.isEmpty() ) {
+        final var files = getSelectedFiles(from);
+        if( files == null || files.isEmpty() ) {
             Alert alert = new NoSelectedFilesAlert();
             alert.showAndWait();
             return;
         }
         Copy copy =  (ApplicationSide.CLIENT == from) ?
-                new Upload(this, selectedFilesDescription) :
-                new Download( this, selectedFilesDescription);
+                new Upload(this, files) : new Download( this, files);
         copy.execute();
     }
 

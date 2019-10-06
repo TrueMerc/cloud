@@ -25,5 +25,5 @@ public interface Command {
     /**
      * Adds next command to a command sequence.
      */
-    void add(Command command);
+    Command add(Command command);
 }

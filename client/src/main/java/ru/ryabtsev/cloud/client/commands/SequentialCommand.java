@@ -8,6 +8,13 @@ public abstract class SequentialCommand implements Command {
     private Command next = null;
 
     @Override
+    public void execute() {
+        if(hasNext()) {
+            next.execute();
+        }
+    }
+
+    @Override
     public boolean hasNext() {
         return next != null;
     }
@@ -18,7 +25,8 @@ public abstract class SequentialCommand implements Command {
     }
 
     @Override
-    public void add(Command command) {
+    public Command add(Command command) {
         next = command;
+        return next;
     }
 }
