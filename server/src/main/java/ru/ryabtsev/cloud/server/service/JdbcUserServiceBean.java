@@ -22,7 +22,6 @@ public class JdbcUserServiceBean implements UserService {
     private static final String DEFAULT_SELECT_QUERY = "SELECT * FROM users WHERE login = ?";
     private final JdbcConnectionManager connectionManager = new JdbcConnectionManager();
 
-
     /**
      * Constructs JDBC based user service implementation.
      * @param serverRootFolder root folder of server storage.
