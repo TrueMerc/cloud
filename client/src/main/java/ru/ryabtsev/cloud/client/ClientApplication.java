@@ -65,7 +65,6 @@ public class ClientApplication extends Application {
         stage.getIcons().add(new Image("/cloud_up_icon_white_background.png"));
         stage.setWidth(DEFAULT_WIDTH);
         stage.setHeight(DEFAULT_HEIGHT);
-
         setActiveScene(SceneId.LOGIN);
     }
 

@@ -42,4 +42,8 @@ public interface NetworkService {
      */
     boolean isConnected();
 
+    /**
+     * Saves network service settings.
+     */
+    void saveSettings();
 }

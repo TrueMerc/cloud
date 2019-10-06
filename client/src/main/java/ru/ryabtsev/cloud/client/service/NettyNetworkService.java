@@ -18,6 +18,9 @@ public class NettyNetworkService implements NetworkService {
     private  static ObjectEncoderOutputStream out;
     private static ObjectDecoderInputStream in;
 
+    private static final String NETWORK_PREFERENCES_NODE_NAME = "/study/cloud/client/network";
+    private NetworkSettings networkSettings = new NetworkSettings(NETWORK_PREFERENCES_NODE_NAME);
+
     @Override
     public void start(final String host, int port) {
         try {
@@ -25,7 +28,7 @@ public class NettyNetworkService implements NetworkService {
             out = new ObjectEncoderOutputStream(socket.getOutputStream());
             in = new ObjectDecoderInputStream(
                     socket.getInputStream(),
-                    NetworkSettings.MAXIMAL_MESSAGE_SIZE_IN_BYTES
+                    networkSettings.getMaximalMessageSize()
             );
         } catch (IOException e) {
             e.printStackTrace();
@@ -49,6 +52,7 @@ public class NettyNetworkService implements NetworkService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        networkSettings.save();
     }
 
     @Override
@@ -71,6 +75,11 @@ public class NettyNetworkService implements NetworkService {
     @Override
     public boolean isConnected() {
         return socket.isConnected();
+    }
+
+    @Override
+    public void saveSettings() {
+        networkSettings.save();
     }
 }
 

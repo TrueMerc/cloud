@@ -15,9 +15,10 @@ import ru.ryabtsev.cloud.common.NetworkSettings;
 
 public class Server {
 
-    private static final int MAXIMAL_MESSAGE_SIZE = NetworkSettings.MAXIMAL_MESSAGE_SIZE_IN_BYTES;
+    private final NetworkSettings networkSettings;
 
-    public Server() {
+    public Server(final NetworkSettings networkSettings) {
+        this.networkSettings = networkSettings;
     }
 
     public void run() throws Exception {
@@ -31,7 +32,10 @@ public class Server {
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         protected void initChannel(SocketChannel socketChannel) {
                             socketChannel.pipeline().addLast(
-                                    new ObjectDecoder(MAXIMAL_MESSAGE_SIZE, ClassResolvers.cacheDisabled(null)),
+                                    new ObjectDecoder(
+                                            networkSettings.getMaximalMessageSize(),
+                                            ClassResolvers.cacheDisabled(null)
+                                    ),
                                     new ObjectEncoder(),
                                     new ServerHandler()
                             );
@@ -39,11 +43,12 @@ public class Server {
                     })
                     .option(ChannelOption.SO_BACKLOG, 128)
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
-            ChannelFuture future = b.bind(NetworkSettings.DEFAULT_PORT).sync();
+            ChannelFuture future = b.bind(networkSettings.getPort()).sync();
             future.channel().closeFuture().sync();
         } finally {
             mainGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
+
         }
     }
 }

@@ -50,33 +50,4 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
             ReferenceCountUtil.release(object);
         }
     }
-
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
-        ctx.close();
-    }
-
-    private void logMessage(AbstractMessage request) {
-        System.out.println(request.getClass().getSimpleName() + " received");
-    }
-
-    @SneakyThrows
-    private boolean delete(@NotNull final String name) {
-        final Path path = Paths.get(formFolderDependentFileName(name));
-        if(Files.exists(path)) {
-            Files.delete(path);
-            return true;
-        }
-        LOGGER.warning("File with given name " + name + " doesn't exists.");
-        return false;
-    }
-
-    private String formFolderDependentFileName(String fileName) {
-        return userCurrentFolder + '/' + fileName;
-    }
-
-    private StandardOpenOption getOpenOption(final FileMessage message) {
-        return FileOperations.getOpenOption(formFolderDependentFileName(message.getFileName()), message.getPartNumber() == 0);
-    }
 }
