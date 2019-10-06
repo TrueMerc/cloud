@@ -3,6 +3,7 @@ package ru.ryabtsev.cloud.client.service;
 
 import io.netty.handler.codec.serialization.ObjectDecoderInputStream;
 import io.netty.handler.codec.serialization.ObjectEncoderOutputStream;
+import ru.ryabtsev.cloud.client.ClientNetworkSettings;
 import ru.ryabtsev.cloud.common.NetworkSettings;
 import ru.ryabtsev.cloud.common.message.AbstractMessage;
 import ru.ryabtsev.cloud.common.message.Message;
@@ -18,13 +19,16 @@ public class NettyNetworkService implements NetworkService {
     private  static ObjectEncoderOutputStream out;
     private static ObjectDecoderInputStream in;
 
-    private static final String NETWORK_PREFERENCES_NODE_NAME = "/study/cloud/client/network";
-    private NetworkSettings networkSettings = new NetworkSettings(NETWORK_PREFERENCES_NODE_NAME);
+    private ClientNetworkSettings networkSettings;
+
+    public NettyNetworkService(final ClientNetworkSettings settings) {
+        this.networkSettings = settings;
+    }
 
     @Override
-    public void start(final String host, int port) {
+    public void start() {
         try {
-            socket = new Socket(host, port);
+            socket = new Socket(networkSettings.getHost(), networkSettings.getPort());
             out = new ObjectEncoderOutputStream(socket.getOutputStream());
             in = new ObjectDecoderInputStream(
                     socket.getInputStream(),

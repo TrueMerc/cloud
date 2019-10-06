@@ -53,7 +53,7 @@ public class FileManagementController implements Initializable {
     @FXML
     FilesTableView serverFilesView = new FilesTableView();
 
-    private static NetworkService networkService = ClientApplication.getNetworkService();
+    private final NetworkService networkService = ClientApplication.getNetworkService();
 
     private final String userName = ClientApplication.userName;
 

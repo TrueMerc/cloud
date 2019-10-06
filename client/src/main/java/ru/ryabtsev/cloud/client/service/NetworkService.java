@@ -11,10 +11,8 @@ public interface NetworkService {
 
     /**
      * Starts new network session with given host and port.
-     * @param host server host.
-     * @param port server port.
      */
-    void start(final String host, int port);
+    void start();
 
     /**
      * Stops network session and releases all I/O resources.

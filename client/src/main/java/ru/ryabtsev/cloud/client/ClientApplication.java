@@ -32,15 +32,15 @@ public class ClientApplication extends Application {
     private static final int DEFAULT_WIDTH = 640;
     private static final int DEFAULT_HEIGHT = 480;
 
-    private static final String DEFAULT_SERVER_HOST = "localhost";
-    private static final int DEFAULT_SERVER_PORT = NetworkSettings.DEFAULT_PORT;
+    private static final String NETWORK_PREFERENCES_NODE_NAME = "/study/cloud/client/network";
+    private static final ClientNetworkSettings networkSettings = new ClientNetworkSettings(NETWORK_PREFERENCES_NODE_NAME);
 
     public static Stage primaryStage;
 
     public static String userName = "";
 
 
-    public static NetworkService networkService = new NettyNetworkService();
+    public static final NetworkService networkService = new NettyNetworkService(networkSettings);
 
     private static final ClientApplication INSTANCE = new ClientApplication();
 
@@ -92,7 +92,7 @@ public class ClientApplication extends Application {
         switch (sceneId) {
             case LOGIN:
                 setScene(LOGIN_FXML_FILE_NAME);
-                networkService.start(DEFAULT_SERVER_HOST, DEFAULT_SERVER_PORT);
+                networkService.start();
                 break;
             case FILE_MANAGEMENT:
                 setScene(FILE_MANAGEMENT_FXML_FILE_NAME);
