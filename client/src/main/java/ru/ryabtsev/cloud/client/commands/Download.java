@@ -21,6 +21,5 @@ public class Download extends Copy {
         final var network = controller.getNetworkService();
         final var user = controller.getUserName();
         network.sendMessage(new DownloadRequest(user, name, 0));
-        super.execute();
     }
 }

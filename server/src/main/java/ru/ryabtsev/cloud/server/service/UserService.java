@@ -16,7 +16,6 @@ public interface UserService {
      */
     boolean authenticate(final @NotNull String login, final @NotNull String password);
 
-
     /**
      * Returns root folder for user with the given name.
      */
